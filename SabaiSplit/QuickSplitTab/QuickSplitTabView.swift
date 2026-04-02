@@ -9,37 +9,23 @@ import SwiftUI
 
 struct QuickSplitTabView: View {
     @State private var totalAmount: Double = 0.0
+    @State private var totalAmountText: String = ""
     @State private var numberOfPeople: Int = 2
     @State private var tipPercentage: Double = 0.0
+    @State private var tipPercentageText: String = ""
     @State private var selectedTipOption: TipOptions = .noTip
     @State private var isOtherTipInputVisiable: Bool = false
     @State private var amountForEachPerson: Double = 0.0
     @State private var qrCodeString: String? = nil
     @State private var qrCodeImage: UIImage? = nil
     @State private var isqrCodeImageGenerated: Bool = false
+    @FocusState private var isTotalAmountFocused: Bool
+    @FocusState private var isTipPercentageFocused: Bool
     private let qrCodeImageGenerator = QrCodeImageGenerator()
     private let qrCodeImageSize: CGFloat = 300.0
     private func isTipOptionSelected(_ option: TipOptions) -> Bool {
         option == selectedTipOption
     }
-    private let totalAmountNumberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        formatter.zeroSymbol = ""
-        return formatter
-    }()
-    private let tipPercentageNumberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 1
-        formatter.maximumFractionDigits = 2
-        formatter.zeroSymbol = ""
-        return formatter
-    }()
     private enum TipOptions: String, Identifiable, CaseIterable {
         case noTip
         case tip10
@@ -81,6 +67,15 @@ struct QuickSplitTabView: View {
         .contentMargins(16.0)
         .scrollIndicators(.hidden)
         .navigationTitle(Text("Quick Split"))
+        .onChange(of: totalAmount) {
+            calculateAmountForEachPerson()
+        }
+        .onChange(of: numberOfPeople) {
+            calculateAmountForEachPerson()
+        }
+        .onChange(of: tipPercentage) {
+            calculateAmountForEachPerson()
+        }
     }
 }
 
@@ -90,17 +85,27 @@ private extension QuickSplitTabView {
             Text("Total Amount")
                 .font(.headline)
             HStack(spacing: 16.0) {
-                TextField(
-                    "0.00",
-                    value: $totalAmount,
-                    formatter: totalAmountNumberFormatter
-                )
-                .keyboardType(.decimalPad)
+                TextField("0.00", text: $totalAmountText)
+                    .keyboardType(.decimalPad)
+                    .focused($isTotalAmountFocused)
+                    .onChange(of: totalAmountText) { _, newValue in
+                        if let value = Double(newValue) {
+                            totalAmount = value
+                        } else if newValue.isEmpty {
+                            totalAmount = 0.0
+                        }
+                    }
+                    .onChange(of: isTotalAmountFocused) { _, isFocused in
+                        if !isFocused {
+                            formatTotalAmount()
+                        }
+                    }
                 Image(systemName: "bahtsign")
             }
             .applyBackgroundStyle(height: 60.0)
         }
     }
+    
     var editSplitBetweenView: some View {
         VStack(alignment: .leading, spacing: 8.0) {
             Text("Split Between")
@@ -120,9 +125,10 @@ private extension QuickSplitTabView {
             .applyBackgroundStyle(height: 60.0)
         }
     }
+    
     var editTipPercentageView: some View {
         VStack(alignment: .leading, spacing: 8.0) {
-            Text("Tip Amount")
+            Text("Tip Percentage")
                 .font(.headline)
             HStack(spacing: 4.0) {
                 ForEach(TipOptions.allCases) { tipOption in
@@ -145,14 +151,27 @@ private extension QuickSplitTabView {
             }
             if isOtherTipInputVisiable {
                 HStack(spacing: 16.0) {
-                    TextField("0.0", value: $tipPercentage, formatter: tipPercentageNumberFormatter)
-                    .keyboardType(.decimalPad)
+                    TextField("0.0", text: $tipPercentageText)
+                        .keyboardType(.decimalPad)
+                        .focused($isTipPercentageFocused)
+                        .onChange(of: tipPercentageText) { _, newValue in
+                            if let value = Double(newValue) {
+                                tipPercentage = value
+                            } else if newValue.isEmpty {
+                                tipPercentage = 0.0
+                            }
+                        }
+                        .onChange(of: isTipPercentageFocused) { _, isFocused in
+                            if !isFocused {
+                                formatTipPercentage()
+                            }
+                        }
                     Image(systemName: "percent")
                 }
                 .applyBackgroundStyle(height: 60.0)
             }
         }
-        .onChange(of: selectedTipOption) { oldOption, newOption in
+        .onChange(of: selectedTipOption) { _, newOption in
             withAnimation {
                 switch newOption {
                 case .noTip:
@@ -174,6 +193,7 @@ private extension QuickSplitTabView {
             }
         }
     }
+    
     var amountForEachPersonView: some View {
         VStack(alignment: .center, spacing: 8.0) {
             Text("Amount For Each Person")
@@ -186,6 +206,7 @@ private extension QuickSplitTabView {
         .frame(maxWidth: .infinity, alignment: .center)
         .applyBackgroundStyle()
     }
+    
     var generateQrCodeButtonView: some View {
         Button {
             generateQrCode()
@@ -193,7 +214,10 @@ private extension QuickSplitTabView {
             Label("Generate QR Code", systemImage: "qrcode")
                 .applyPrimaryButtonStyle()
         }
+        .disabled(totalAmount == 0.0 || amountForEachPerson == 0.0)
+        .opacity((totalAmount == 0.0 || amountForEachPerson == 0.0) ? 0.5 : 1.0)
     }
+    
     var scanToPayView: some View {
         VStack(spacing: 12.0) {
             Text("Scan PromptPay QR")
@@ -206,6 +230,7 @@ private extension QuickSplitTabView {
         }
         .applyBackgroundStyle()
     }
+    
     var qrCodeInfoView: some View {
         VStack(spacing: 4.0) {
             HStack {
@@ -228,9 +253,10 @@ private extension QuickSplitTabView {
             }
         }
     }
+    
     var resetButtonView: some View {
         Button {
-            
+            resetCalculation()
         } label: {
             Text("Reset")
                 .applyPrimaryDestructiveButtonStyle()
@@ -239,18 +265,59 @@ private extension QuickSplitTabView {
 }
 
 private extension QuickSplitTabView {
+    func formatTotalAmount() {
+        if totalAmount > 0 {
+            totalAmountText = String(format: "%.2f", totalAmount)
+        } else {
+            totalAmountText = ""
+        }
+    }
+    
+    func formatTipPercentage() {
+        if tipPercentage > 0 {
+            tipPercentageText = String(format: "%.1f", tipPercentage)
+        } else {
+            tipPercentageText = ""
+        }
+    }
+    
+    func calculateAmountForEachPerson() {
+        let tipAmount = totalAmount * (tipPercentage / 100.0)
+        let totalWithTip = totalAmount + tipAmount
+        amountForEachPerson = totalWithTip / Double(numberOfPeople)
+    }
+    
     func generateQrCode() {
+        guard totalAmount > 0.0 && amountForEachPerson > 0.0 else {
+            return
+        }
         withAnimation {
             isqrCodeImageGenerated = false
-            if let qrString = PromptPayQRStringGenerator.generateQRString(
+            qrCodeString = PromptPayQRStringGenerator.generateQRString(
                 promptPayPhoneNumber: "0946341761",
                 amount: amountForEachPerson
-            ) {
-                qrCodeImage = qrCodeImageGenerator.generateQRCodeImage(from: qrString, size: qrCodeImageSize)
+            )
+            if let qrCodeString {
+                qrCodeImage = qrCodeImageGenerator.generateQRCodeImage(from: qrCodeString, size: qrCodeImageSize)
             }
             isqrCodeImageGenerated = true
         }
-        
+    }
+    
+    func resetCalculation() {
+        withAnimation {
+            totalAmount = 0.0
+            totalAmountText = ""
+            numberOfPeople = 2
+            tipPercentage = 0.0
+            tipPercentageText = ""
+            selectedTipOption = .noTip
+            isOtherTipInputVisiable = false
+            amountForEachPerson = 0.0
+            qrCodeString = nil
+            qrCodeImage = nil
+            isqrCodeImageGenerated = false
+        }
     }
 }
 
