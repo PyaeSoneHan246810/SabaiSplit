@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct QuickSplitTabView: View {
+    @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
     @State private var totalAmount: Double = 0.0
     @State private var totalAmountText: String = ""
     @State private var numberOfPeople: Int = 2
@@ -235,16 +236,20 @@ private extension QuickSplitTabView {
     var qrCodeInfoView: some View {
         VStack(spacing: 4.0) {
             HStack {
-                Text("Phone Number:")
+                Text("Prompt Pay Phone Number:")
+                    .font(.body)
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text("0617862720")
-                    .font(.headline)
+                if let promptPayPhoneNumber {
+                    Text(promptPayPhoneNumber)
+                        .font(.headline)
+                }
             }
             Divider()
             HStack {
                 Text("Amount:")
+                    .font(.body)
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
                 Spacer()
@@ -289,13 +294,14 @@ private extension QuickSplitTabView {
     }
     
     func generateQrCode() {
+        guard let promptPayPhoneNumber else { return }
         guard totalAmount > 0.0 && amountForEachPerson > 0.0 else {
             return
         }
         withAnimation {
             isqrCodeImageGenerated = false
             qrCodeString = PromptPayQRStringGenerator.generateQRString(
-                promptPayPhoneNumber: "0946341761",
+                promptPayPhoneNumber: promptPayPhoneNumber,
                 amount: amountForEachPerson
             )
             if let qrCodeString {
@@ -319,22 +325,6 @@ private extension QuickSplitTabView {
             qrCodeString = nil
             qrCodeImage = nil
             isqrCodeImageGenerated = false
-        }
-    }
-}
-
-private extension View {
-    @ViewBuilder
-    func applyBackgroundStyle(height: CGFloat? = nil) -> some View {
-        if let height {
-            self
-                .padding(16.0)
-                .frame(height: height)
-                .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12.0))
-        } else {
-            self
-                .padding(16.0)
-                .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12.0))
         }
     }
 }

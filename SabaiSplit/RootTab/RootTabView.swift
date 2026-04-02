@@ -8,7 +8,24 @@
 import SwiftUI
 
 struct RootTabView: View {
+    @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
+    @State private var isAddNumberSheetPresented: Bool = false
     var body: some View {
+        mainTabView
+        .onAppear {
+            isAddNumberSheetPresented = promptPayPhoneNumber == nil
+        }
+        .onChange(of: promptPayPhoneNumber) { _, newValue in
+            isAddNumberSheetPresented = newValue == nil
+        }
+        .sheet(isPresented: $isAddNumberSheetPresented) {
+            WelcomeView()
+        }
+    }
+}
+
+private extension RootTabView {
+    var mainTabView: some View {
         TabView {
             Tab("Quick Split", systemImage: "qrcode") {
                 QuickSplitTabView()

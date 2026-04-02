@@ -29,4 +29,17 @@ extension View {
             .foregroundStyle(.white)
             .background(.pink, in: .capsule)
     }
+    @ViewBuilder
+    func applyBackgroundStyle(height: CGFloat? = nil) -> some View {
+        if let height {
+            self
+                .padding(16.0)
+                .frame(height: height)
+                .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12.0))
+        } else {
+            self
+                .padding(16.0)
+                .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12.0))
+        }
+    }
 }

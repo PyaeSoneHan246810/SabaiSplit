@@ -16,7 +16,7 @@ struct PromptPayQRStringGenerator {
     /// - Returns: EMV QR code string for PromptPay
     static func generateQRString(promptPayPhoneNumber: String, amount: Double?) -> String? {
         // Validate and format phone number
-        guard let formattedPhone = formatPhoneNumber(promptPayPhoneNumber) else {
+        guard let formattedPhoneNumber = formatPhoneNumber(promptPayPhoneNumber) else {
             return nil
         }
         
@@ -32,7 +32,7 @@ struct PromptPayQRStringGenerator {
         // Merchant Account Information
         var merchantInfo = ""
         merchantInfo += formatTag("00", "A000000677010111") // AID for PromptPay
-        merchantInfo += formatTag("01", formattedPhone) // Phone number
+        merchantInfo += formatTag("01", formattedPhoneNumber) // Phone number
         qrString += formatTag("29", merchantInfo)
         
         // Transaction Currency (764 = Thai Baht)
@@ -70,7 +70,7 @@ struct PromptPayQRStringGenerator {
     /// Formats Thai phone number to PromptPay format (0066xxxxxxxxx)
     /// - Parameter phoneNumber: Input phone number
     /// - Returns: Formatted phone number or nil if invalid
-    private static func formatPhoneNumber(_ phoneNumber: String) -> String? {
+    static func formatPhoneNumber(_ phoneNumber: String) -> String? {
         // Remove all non-digit characters
         let digits = phoneNumber.filter { $0.isNumber }
         
