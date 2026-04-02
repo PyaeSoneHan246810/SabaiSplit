@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StartingView: View {
     var body: some View {
-        Text("Starting View")
+        RootTabView()
     }
 }
 

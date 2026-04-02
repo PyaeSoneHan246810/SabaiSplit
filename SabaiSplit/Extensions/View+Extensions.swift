@@ -13,4 +13,20 @@ extension View {
             self
         }
     }
+    func applyPrimaryButtonStyle() -> some View {
+        self
+            .fontWeight(.semibold)
+            .frame(maxWidth: .infinity)
+            .frame(height: 60.0)
+            .foregroundStyle(.white)
+            .background(.mint, in: .capsule)
+    }
+    func applyPrimaryDestructiveButtonStyle() -> some View {
+        self
+            .fontWeight(.semibold)
+            .frame(maxWidth: .infinity)
+            .frame(height: 60.0)
+            .foregroundStyle(.white)
+            .background(.pink, in: .capsule)
+    }
 }
