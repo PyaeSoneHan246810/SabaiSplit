@@ -36,14 +36,16 @@ class QrCodeImageGenerator {
         let textHeight: CGFloat = 60
         let totalHeight = imageSize + textHeight
         let totalSize = CGSize(width: imageSize, height: totalHeight)
-        UIGraphicsBeginImageContextWithOptions(totalSize, false, 0.0)
+        UIGraphicsBeginImageContextWithOptions(totalSize, true, 0.0)
         defer { UIGraphicsEndImageContext() }
+        UIColor.white.setFill()
+        UIRectFill(CGRect(origin: .zero, size: totalSize))
         image.draw(in: CGRect(x: 0, y: 0, width: imageSize, height: imageSize))
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 24, weight: .semibold),
-            .foregroundColor: UIColor.label,
+            .foregroundColor: UIColor.black,
             .paragraphStyle: paragraphStyle
         ]
         let textRect = CGRect(x: 0, y: imageSize, width: imageSize, height: textHeight)

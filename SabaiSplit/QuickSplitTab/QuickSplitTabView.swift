@@ -66,6 +66,7 @@ struct QuickSplitTabView: View {
         }
         .contentMargins(16.0)
         .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.immediately)
         .navigationTitle(Text("Quick Split"))
         .onChange(of: totalAmount) {
             calculateAmountForEachPerson()
