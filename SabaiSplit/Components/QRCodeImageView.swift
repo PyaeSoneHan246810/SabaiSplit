@@ -18,7 +18,7 @@ struct QRCodeImageView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: size, height: size)
-                    .clipShape(RoundedRectangle(cornerRadius: 12.0))
+                    .background(.white, in: RoundedRectangle(cornerRadius: 12.0))
             } else {
                 RoundedRectangle(cornerRadius: 12.0)
                     .fill(Color(uiColor: .systemGray6))
@@ -37,7 +37,9 @@ struct QRCodeImageView: View {
                     }
             }
             Button("Save QR Code") {
-                
+                guard let uiImage else { return }
+                let imageSaver = ImageSaver()
+                imageSaver.writeToPhotoAlbum(uiImage: uiImage)
             }
             .buttonStyle(.bordered)
             .controlSize(.small)

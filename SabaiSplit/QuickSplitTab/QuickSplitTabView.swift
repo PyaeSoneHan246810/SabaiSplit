@@ -220,7 +220,7 @@ private extension QuickSplitTabView {
     
     var scanToPayView: some View {
         VStack(spacing: 12.0) {
-            Text("Scan PromptPay QR")
+            Text("Scan PromptPay QR Code")
                 .font(.headline)
             QRCodeImageView(uiImage: qrCodeImage, size: qrCodeImageSize)
             qrCodeInfoView
@@ -298,7 +298,8 @@ private extension QuickSplitTabView {
                 amount: amountForEachPerson
             )
             if let qrCodeString {
-                qrCodeImage = qrCodeImageGenerator.generateQRCodeImage(from: qrCodeString, size: qrCodeImageSize)
+                let amountText = "฿\(String(format: "%.2f", amountForEachPerson))"
+                qrCodeImage = qrCodeImageGenerator.generateQRCodeImage(from: qrCodeString, size: qrCodeImageSize, bottomText: amountText)
             }
             isqrCodeImageGenerated = true
         }

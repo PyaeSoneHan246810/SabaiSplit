@@ -14,7 +14,7 @@ class QrCodeImageGenerator {
     
     private let qrCodeGenerator = CIFilter.qrCodeGenerator()
     
-    func generateQRCodeImage(from string: String, size: CGFloat) -> UIImage? {
+    func generateQRCodeImage(from string: String, size: CGFloat, bottomText: String? = nil) -> UIImage? {
         qrCodeGenerator.message = Data(string.utf8)
         guard let outputImage = qrCodeGenerator.outputImage else {
             return nil
@@ -25,6 +25,30 @@ class QrCodeImageGenerator {
         guard let cgImage = context.createCGImage(transformedImage, from: transformedImage.extent) else {
             return nil
         }
-        return UIImage(cgImage: cgImage)
+        let qrImage = UIImage(cgImage: cgImage)
+        guard let text = bottomText else {
+            return qrImage
+        }
+        return addTextBelowImage(qrImage, text: text, imageSize: size)
+    }
+    
+    private func addTextBelowImage(_ image: UIImage, text: String, imageSize: CGFloat) -> UIImage? {
+        let textHeight: CGFloat = 60
+        let totalHeight = imageSize + textHeight
+        let totalSize = CGSize(width: imageSize, height: totalHeight)
+        UIGraphicsBeginImageContextWithOptions(totalSize, false, 0.0)
+        defer { UIGraphicsEndImageContext() }
+        image.draw(in: CGRect(x: 0, y: 0, width: imageSize, height: imageSize))
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 24, weight: .semibold),
+            .foregroundColor: UIColor.label,
+            .paragraphStyle: paragraphStyle
+        ]
+        let textRect = CGRect(x: 0, y: imageSize, width: imageSize, height: textHeight)
+        let attributedText = NSAttributedString(string: text, attributes: attributes)
+        attributedText.draw(in: textRect)
+        return UIGraphicsGetImageFromCurrentImageContext()
     }
 }

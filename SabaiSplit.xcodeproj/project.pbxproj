@@ -10,9 +10,22 @@
 		04F5A3652F7E4ACD003E30E9 /* SabaiSplit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SabaiSplit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		04F5A4802F7EC476003E30E9 /* Exceptions for "SabaiSplit" folder in "SabaiSplit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 04F5A3642F7E4ACD003E30E9 /* SabaiSplit */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		04F5A3672F7E4ACD003E30E9 /* SabaiSplit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				04F5A4802F7EC476003E30E9 /* Exceptions for "SabaiSplit" folder in "SabaiSplit" target */,
+			);
 			path = SabaiSplit;
 			sourceTree = "<group>";
 		};
@@ -256,8 +269,10 @@
 				DEVELOPMENT_TEAM = CL5Q2QY8FV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SabaiSplit/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Sabai Split";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save the QR code image generated.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -290,8 +305,10 @@
 				DEVELOPMENT_TEAM = CL5Q2QY8FV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SabaiSplit/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Sabai Split";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save the QR code image generated.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
