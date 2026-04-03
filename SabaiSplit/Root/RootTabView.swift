@@ -9,17 +9,20 @@ import SwiftUI
 
 struct RootTabView: View {
     @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
-    @State private var isAddNumberSheetPresented: Bool = false
+    @State private var isWelcomeSheetPresented: Bool = false
     var body: some View {
         mainTabView
         .onAppear {
-            isAddNumberSheetPresented = promptPayPhoneNumber == nil
+            isWelcomeSheetPresented = promptPayPhoneNumber == nil
         }
         .onChange(of: promptPayPhoneNumber) { _, newValue in
-            isAddNumberSheetPresented = newValue == nil
+            isWelcomeSheetPresented = newValue == nil
         }
-        .sheet(isPresented: $isAddNumberSheetPresented) {
+        .sheet(isPresented: $isWelcomeSheetPresented) {
             WelcomeView()
+                .wrapsWithNavigationStack()
+                .presentationDetents([.medium])
+                .interactiveDismissDisabled()
         }
     }
 }

@@ -21,8 +21,6 @@ struct WelcomeView: View {
         .contentMargins(16.0)
         .scrollIndicators(.hidden)
         .scrollDismissesKeyboard(.immediately)
-        .presentationDetents([.medium])
-        .interactiveDismissDisabled()
     }
 }
 
@@ -49,7 +47,7 @@ private extension WelcomeView {
                 .font(.headline)
             TextField("Enter your number", text: $promptPayPhoneNumber)
                 .keyboardType(.phonePad)
-                .applyBackgroundStyle(height: 60.0)
+                .backgroundCardStyle(height: 60.0)
             if !promptPayPhoneNumber.isEmpty && !isPhoneNumberValid {
                 Text("Please enter a valid 10-digit Thai phone number starting with 0")
                     .font(.caption)
@@ -62,7 +60,7 @@ private extension WelcomeView {
             savedPromptPayPhoneNumber = promptPayPhoneNumber
         } label: {
             Label("Save", systemImage: "")
-                .applyPrimaryButtonStyle()
+                .primaryButtonStyle()
         }
         .disabled(!isPhoneNumberValid)
     }

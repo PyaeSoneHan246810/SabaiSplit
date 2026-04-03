@@ -13,7 +13,7 @@ extension View {
             self
         }
     }
-    func applyPrimaryButtonStyle() -> some View {
+    func primaryButtonStyle() -> some View {
         self
             .fontWeight(.semibold)
             .frame(maxWidth: .infinity)
@@ -21,7 +21,7 @@ extension View {
             .foregroundStyle(.white)
             .background(.mint, in: .capsule)
     }
-    func applyPrimaryDestructiveButtonStyle() -> some View {
+    func primaryDestructiveButtonStyle() -> some View {
         self
             .fontWeight(.semibold)
             .frame(maxWidth: .infinity)
@@ -30,16 +30,10 @@ extension View {
             .background(.pink, in: .capsule)
     }
     @ViewBuilder
-    func applyBackgroundStyle(height: CGFloat? = nil) -> some View {
-        if let height {
-            self
-                .padding(16.0)
-                .frame(height: height)
-                .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12.0))
-        } else {
-            self
-                .padding(16.0)
-                .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12.0))
-        }
+    func backgroundCardStyle(height: CGFloat? = nil) -> some View {
+        self
+            .padding(16.0)
+            .frame(height: height)
+            .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12.0))
     }
 }

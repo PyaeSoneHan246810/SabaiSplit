@@ -43,7 +43,6 @@ struct QRCodeImageView: View {
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
-            .tint(.mint)
         }
     }
 }

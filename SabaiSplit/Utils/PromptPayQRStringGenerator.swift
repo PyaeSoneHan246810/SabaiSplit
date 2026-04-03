@@ -57,16 +57,6 @@ struct PromptPayQRStringGenerator {
         return qrString
     }
     
-    /// Formats a tag with its value according to EMV specification
-    /// - Parameters:
-    ///   - tag: Two-digit tag identifier
-    ///   - value: Tag value
-    /// - Returns: Formatted tag string (tag + length + value)
-    private static func formatTag(_ tag: String, _ value: String) -> String {
-        let length = String(format: "%02d", value.count)
-        return tag + length + value
-    }
-    
     /// Formats Thai phone number to PromptPay format (0066xxxxxxxxx)
     /// - Parameter phoneNumber: Input phone number
     /// - Returns: Formatted phone number or nil if invalid
@@ -87,6 +77,16 @@ struct PromptPayQRStringGenerator {
         // Convert to international format (0066xxxxxxxxx)
         let withoutLeadingZero = String(digits.dropFirst())
         return "0066" + withoutLeadingZero
+    }
+    
+    /// Formats a tag with its value according to EMV specification
+    /// - Parameters:
+    ///   - tag: Two-digit tag identifier
+    ///   - value: Tag value
+    /// - Returns: Formatted tag string (tag + length + value)
+    private static func formatTag(_ tag: String, _ value: String) -> String {
+        let length = String(format: "%02d", value.count)
+        return tag + length + value
     }
     
     /// Calculates CRC-16/CCITT-FALSE checksum
