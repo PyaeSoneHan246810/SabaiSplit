@@ -164,4 +164,5 @@ private extension CreateBillSplitView {
 #Preview {
     CreateBillSplitView()
         .wrapsWithNavigationStack()
+        .tint(.mint)
 }

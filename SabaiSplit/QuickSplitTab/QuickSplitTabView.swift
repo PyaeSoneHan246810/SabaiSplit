@@ -97,7 +97,7 @@ private extension QuickSplitTabView {
     
     var generateQrCodeButtonView: some View {
         Button {
-            generateQrCode()
+            generateQrCodeImage()
         } label: {
             Label("Generate QR Code", systemImage: "qrcode")
                 .primaryButtonStyle()
@@ -107,39 +107,12 @@ private extension QuickSplitTabView {
     }
     
     var scanToPayView: some View {
-        VStack(spacing: 12.0) {
-            Text("Scan PromptPay QR Code")
-                .font(.headline)
-            QRCodeImageView(uiImage: qrCodeImage, size: qrCodeImageSize)
-            VStack(spacing: 4.0) {
-                HStack {
-                    Text("Prompt Pay Phone Number:")
-                        .font(.body)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    if let promptPayPhoneNumber {
-                        Text(promptPayPhoneNumber)
-                            .font(.headline)
-                    }
-                }
-                Divider()
-                HStack {
-                    Text("Amount:")
-                        .font(.body)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    BahtTextView(amount: amountPerPerson)
-                        .font(.headline)
-                        .foregroundStyle(.mint)
-                }
-            }
-            Text("Scan this QR code with any Thai banking app.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-        }
-        .backgroundCardStyle()
+        ScanToPayView(
+            qrCodeImage: qrCodeImage,
+            qrCodeImageSize: qrCodeImageSize,
+            promptPayPhoneNumber: promptPayPhoneNumber,
+            amount: amountPerPerson
+        )
     }
     
     var resetButtonView: some View {
@@ -160,7 +133,7 @@ private extension QuickSplitTabView {
         amountPerPerson = totalWithTip / Double(numberOfPeople)
     }
     
-    func generateQrCode() {
+    func generateQrCodeImage() {
         guard let promptPayPhoneNumber else { return }
         guard totalAmount > 0.0 && amountPerPerson > 0.0 else {
             return
@@ -198,4 +171,5 @@ private extension QuickSplitTabView {
 #Preview {
     QuickSplitTabView()
         .wrapsWithNavigationStack()
+        .tint(.mint)
 }

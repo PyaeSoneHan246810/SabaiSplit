@@ -16,7 +16,7 @@ struct BillSplitsTabView: View {
         List {
             ForEach(billSplits) { billSplit in
                 NavigationLink {
-                    
+                    BillSplitDetailsView(billSplit: billSplit)
                 } label: {
                     BillSplitItemView(billSplit: billSplit)
                 }
@@ -59,4 +59,5 @@ private extension BillSplitsTabView {
 #Preview {
     BillSplitsTabView()
         .wrapsWithNavigationStack()
+        .tint(.mint)
 }

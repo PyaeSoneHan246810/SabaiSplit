@@ -32,4 +32,28 @@ final class BillSplit {
     var isAllPaid: Bool {
         !personList.isEmpty && personList.allSatisfy { $0.hasPaid }
     }
+    var ratio: String {
+        "\(numberOfPaidPerson)/\(numberOfPerson)"
+    }
+    var paidAmount: Double {
+        personList.filter { $0.hasPaid }.reduce(0) { $0 + $1.amount }
+    }
+    var remainingAmount: Double {
+        personList.filter { !$0.hasPaid }.reduce(0) { $0 + $1.amount }
+    }
+}
+
+extension BillSplit {
+    static var sample: BillSplit {
+        BillSplit(
+            title: "Sample Bill Title",
+            totalAmount: 2000.0,
+            tipPercentage: 0.0,
+            date: Date(),
+            personList: [
+                Person(name: "Person 1", amount: 1000, hasPaid: true, paidDate: Date()),
+                Person(name: "Person 2", amount: 1000, hasPaid: false, paidDate: nil)
+            ]
+        )
+    }
 }

@@ -34,6 +34,6 @@ extension View {
         self
             .padding(16.0)
             .frame(height: height)
-            .background(Color(uiColor: .tertiarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12.0))
+            .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12.0))
     }
 }

@@ -23,7 +23,7 @@ struct TipPercentageSelectionView: View {
                     Text(tipOption.label)
                         .frame(maxWidth: .infinity)
                         .frame(height: 40.0)
-                        .background(Color(uiColor: .tertiarySystemGroupedBackground), in: .capsule)
+                        .background(Color(uiColor: .secondarySystemBackground), in: .capsule)
                         .overlay {
                             if isTipOptionSelected(tipOption) {
                                 Capsule()

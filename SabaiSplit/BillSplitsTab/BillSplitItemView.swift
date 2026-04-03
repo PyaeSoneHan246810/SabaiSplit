@@ -22,7 +22,7 @@ struct BillSplitItemView: View {
                     .foregroundStyle(.secondary)
             }
             HStack(spacing: 12.0) {
-                Text("\(billSplit.numberOfPaidPerson)/\(billSplit.numberOfPerson) paid")
+                Text("\(billSplit.ratio) paid")
                 ProgressView(
                     value: Double(billSplit.numberOfPaidPerson),
                     total: Double(billSplit.numberOfPerson)
@@ -39,6 +39,7 @@ struct BillSplitItemView: View {
 
 #Preview {
     BillSplitItemView(
-        billSplit: BillSplit(title: "Test", totalAmount: 2000.0, tipPercentage: 0.0)
+        billSplit: BillSplit.sample
     )
+    .tint(.mint)
 }
