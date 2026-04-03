@@ -23,4 +23,13 @@ final class BillSplit {
         self.date = date
         self.personList = personList
     }
+    var numberOfPerson: Int {
+        personList.count
+    }
+    var numberOfPaidPerson: Int {
+        personList.filter { $0.hasPaid }.count
+    }
+    var isAllPaid: Bool {
+        !personList.isEmpty && personList.allSatisfy { $0.hasPaid }
+    }
 }

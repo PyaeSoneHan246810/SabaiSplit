@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct SabaiSplitApp: App {
@@ -13,5 +14,6 @@ struct SabaiSplitApp: App {
         WindowGroup {
             StartingView()
         }
+        .modelContainer(for: BillSplit.self)
     }
 }

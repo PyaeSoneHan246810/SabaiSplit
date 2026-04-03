@@ -86,7 +86,7 @@ private extension QuickSplitTabView {
     
     var amountForEachPersonView: some View {
         HeadlinedSectionView(headline: "Amount For Each Person", alignment: .center) {
-            Text("฿\(amountPerPerson, format: .number.precision(.fractionLength(2)))")
+            BahtTextView(amount: amountPerPerson)
                 .font(.largeTitle)
                 .fontWeight(.semibold)
                 .foregroundStyle(.mint)
@@ -130,7 +130,7 @@ private extension QuickSplitTabView {
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
                     Spacer()
-                    Text("฿\(amountPerPerson, format: .number.precision(.fractionLength(2)))")
+                    BahtTextView(amount: amountPerPerson)
                         .font(.headline)
                         .foregroundStyle(.mint)
                 }
