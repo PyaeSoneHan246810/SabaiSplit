@@ -10,8 +10,9 @@ import SwiftData
 
 struct BillSplitDetailsView: View {
     @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
+    @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
-    @Bindable var billSplit: BillSplit
+    let billSplit: BillSplit
     @State private var personQrItem: PersonQrItem? = nil
     private let qrCodeImageGenerator = QrCodeImageGenerator()
     private let qrCodeImageSize: CGFloat = 300.0
@@ -97,7 +98,7 @@ private extension BillSplitDetailsView {
         }
     }
     var peopleListView: some View {
-        ForEach($billSplit.personList) { $person in
+        ForEach(billSplit.personList) { person in
             HStack(spacing: 8.0) {
                 personPaidToggleView(person)
                 personInfoView(person)
@@ -110,10 +111,11 @@ private extension BillSplitDetailsView {
     func personPaidToggleView(_ person: Person) -> some View {
         Button {
             person.hasPaid.toggle()
-            if person.hasPaid {
-                person.paidDate = Date()
-            } else {
-                person.paidDate = nil
+            person.paidDate = person.hasPaid ? Date() : nil
+            do {
+                try modelContext.save()
+            } catch {
+                print(error.localizedDescription)
             }
         } label: {
             Image(systemName: person.hasPaid ? "checkmark.circle.fill" : "circle")
@@ -157,7 +159,7 @@ private extension BillSplitDetailsView {
             ScanToPayView(
                 qrCodeImage: personQrItem.qrCodeImage,
                 qrCodeImageSize: qrCodeImageSize,
-                promptPayPhoneNumber: promptPayPhoneNumber,
+                promptPayPhoneNumber: promptPayPhoneNumber ?? "-",
                 amount: personQrItem.person.amount
             )
         }
@@ -184,7 +186,11 @@ private extension BillSplitDetailsView {
             amount: amount
         ) else { return nil }
         let amountText = "฿\(String(format: "%.2f", amount))"
-        return qrCodeImageGenerator.generateQRCodeImage(from: qrCodeString, size: qrCodeImageSize, bottomText: amountText)
+        return qrCodeImageGenerator.generateQRCodeImage(
+            from: qrCodeString,
+            size: qrCodeImageSize,
+            bottomText: amountText
+        )
     }
 }
 

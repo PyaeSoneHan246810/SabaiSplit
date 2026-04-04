@@ -110,7 +110,7 @@ private extension QuickSplitTabView {
         ScanToPayView(
             qrCodeImage: qrCodeImage,
             qrCodeImageSize: qrCodeImageSize,
-            promptPayPhoneNumber: promptPayPhoneNumber,
+            promptPayPhoneNumber: promptPayPhoneNumber ?? "-",
             amount: amountPerPerson
         )
     }

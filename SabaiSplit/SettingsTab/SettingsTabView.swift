@@ -145,10 +145,11 @@ private extension SettingsTabView {
         .scrollIndicators(.hidden)
         .scrollDismissesKeyboard(.immediately)
         .toolbar {
-            Button(role: .close) {
-                isPromptPayNumberEditSheetPresented = false
+            ToolbarItem(placement: .cancellationAction) {
+                Button(role: .cancel) {
+                    isPromptPayNumberEditSheetPresented = false
+                }
             }
-            
         }
     }
 }

@@ -12,11 +12,10 @@ struct StatisticsTabView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Query private var allBillSplits: [BillSplit]
     @Query private var allPersonList: [Person]
-    private var paidPersonList: [Person] {
-        allPersonList.filter { $0.hasPaid }
-    }
-    private var unpaidPersonList: [Person] {
-        allPersonList.filter { !$0.hasPaid }
+    @Query(filter: #Predicate<Person> { $0.hasPaid }) private var paidPersonList: [Person]
+    @Query(filter: #Predicate<Person> { !$0.hasPaid }) private var unpaidPersonList: [Person]
+    private var unpaidPersonListSorted: [Person] {
+        unpaidPersonList.sorted { ($0.billSplit?.date ?? .distantPast) > ($1.billSplit?.date ?? .distantPast) }
     }
     private var allBillSplitsCount: Int {
         allBillSplits.count
@@ -49,6 +48,7 @@ struct StatisticsTabView: View {
     private var totalPendingAmount: Double {
         unpaidPersonList.reduce(0) { $0 + $1.amount }
     }
+    @State private var selectedUnpaidPerson: Person? = nil
     var body: some View {
         ScrollView(.vertical) {
             VStack(spacing: 20.0) {
@@ -56,13 +56,18 @@ struct StatisticsTabView: View {
                     overviewView
                 }
                 HeadlinedSectionView(headline: "Unpaid people") {
-                    unpaidPeopleListView
+                    unpaidPersonListView
                 }
             }
         }
         .contentMargins(16.0)
         .scrollIndicators(.hidden)
         .navigationTitle(Text("Statistics"))
+        .sheet(item: $selectedUnpaidPerson) { unpaidPerson in
+            UnpaidPersonDetailsView(unpaidPerson: unpaidPerson)
+                .wrapsWithNavigationStack()
+                .interactiveDismissDisabled(true)
+        }
     }
 }
 
@@ -94,7 +99,7 @@ private extension StatisticsTabView {
                 )
                 StatisticCardView(
                     title: String(format: "฿%.2f", totalAmount),
-                    label: "Total Amount",
+                    label: "Total bill amount",
                     titleColor: Color.primary
                 )
             }
@@ -161,8 +166,8 @@ private extension StatisticsTabView {
         .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12.0))
     }
     @ViewBuilder
-    var unpaidPeopleListView: some View {
-        if unpaidPersonList.isEmpty {
+    var unpaidPersonListView: some View {
+        if unpaidPersonListSorted.isEmpty {
             ContentUnavailableView {
                 Label("No Unpaid People", systemImage: "person.3.fill")
             } description: {
@@ -170,33 +175,14 @@ private extension StatisticsTabView {
             }
         } else {
             VStack(spacing: 10.0) {
-                ForEach(unpaidPersonList) { person in
-                    UnpaidPeopleItemView(person: person)
+                ForEach(unpaidPersonListSorted) { unpaidPerson in
+                    UnpaidPersonItemView(person: unpaidPerson)
+                        .onTapGesture {
+                            selectedUnpaidPerson = unpaidPerson
+                        }
                 }
             }
         }
-    }
-}
-
-struct UnpaidPeopleItemView: View {
-    let person: Person
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(person.name)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                if let billSplit = person.billSplit {
-                    Text(billSplit.title)
-                        .font(.footnote)
-                }
-            }
-            Spacer()
-            BahtTextView(amount: person.amount)
-                .font(.headline)
-                .foregroundStyle(.pink)
-        }
-        .backgroundCardStyle()
     }
 }
 

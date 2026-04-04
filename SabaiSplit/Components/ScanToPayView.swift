@@ -10,7 +10,7 @@ import SwiftUI
 struct ScanToPayView: View {
     let qrCodeImage: UIImage?
     let qrCodeImageSize: CGFloat
-    let promptPayPhoneNumber: String?
+    let promptPayPhoneNumber: String
     let amount: Double
     var body: some View {
         VStack(spacing: 12.0) {
@@ -24,10 +24,8 @@ struct ScanToPayView: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
                     Spacer()
-                    if let promptPayPhoneNumber {
-                        Text(promptPayPhoneNumber)
-                            .font(.headline)
-                    }
+                    Text(promptPayPhoneNumber)
+                        .font(.headline)
                 }
                 Divider()
                 HStack {
