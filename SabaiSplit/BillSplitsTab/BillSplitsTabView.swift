@@ -13,22 +13,7 @@ struct BillSplitsTabView: View {
     @Query(sort: \BillSplit.date, order: .reverse) private var billSplits: [BillSplit]
     @State private var isCreateBillSplitSheetPresented: Bool = false
     var body: some View {
-        List {
-            ForEach(billSplits) { billSplit in
-                NavigationLink {
-                    BillSplitDetailsView(billSplit: billSplit)
-                } label: {
-                    BillSplitItemView(billSplit: billSplit)
-                }
-                .navigationLinkIndicatorVisibility(.hidden)
-            }
-            .onDelete { indexSet in
-                indexSet.forEach { index in
-                    let billSplit = billSplits[index]
-                    deleteBillSplit(billSplit)
-                }
-            }
-        }
+        billSplitsListView
         .navigationTitle(Text("Bill Splits"))
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -41,6 +26,38 @@ struct BillSplitsTabView: View {
             CreateBillSplitView()
                 .wrapsWithNavigationStack()
                 .interactiveDismissDisabled()
+        }
+    }
+    @ViewBuilder
+    private var billSplitsListView: some View {
+        if billSplits.isEmpty {
+            ContentUnavailableView {
+                Label("No Bill Splits", systemImage: "person.3.fill")
+            } description: {
+                Text("Create a bill split to save them here.")
+            } actions: {
+                Button("Create Bill Split", systemImage: "plus") {
+                    isCreateBillSplitSheetPresented = true
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        } else {
+            List {
+                ForEach(billSplits) { billSplit in
+                    NavigationLink {
+                        BillSplitDetailsView(billSplit: billSplit)
+                    } label: {
+                        BillSplitItemView(billSplit: billSplit)
+                    }
+                    .navigationLinkIndicatorVisibility(.hidden)
+                }
+                .onDelete { indexSet in
+                    indexSet.forEach { index in
+                        let billSplit = billSplits[index]
+                        deleteBillSplit(billSplit)
+                    }
+                }
+            }
         }
     }
 }

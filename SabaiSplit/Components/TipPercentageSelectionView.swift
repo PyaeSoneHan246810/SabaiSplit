@@ -94,3 +94,11 @@ struct TipPercentageSelectionView: View {
         }
     }
 }
+
+#Preview {
+    TipPercentageSelectionView(
+        selectedTipOption: .constant(.noTip),
+        tipPercentage: .constant(0.0),
+        tipPercentageText: .constant("")
+    )
+}

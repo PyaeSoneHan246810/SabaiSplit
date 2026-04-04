@@ -9,8 +9,8 @@ import SwiftUI
 
 struct SettingsTabView: View {
     var body: some View {
-        Text("Settings Tab View")
-            .navigationTitle(Text("Settings"))
+        Text("Settings")
+        .navigationTitle(Text("Settings"))
     }
 }
 

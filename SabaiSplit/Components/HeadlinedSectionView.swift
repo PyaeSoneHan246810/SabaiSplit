@@ -19,3 +19,9 @@ struct HeadlinedSectionView<Content: View>: View {
         }
     }
 }
+
+#Preview {
+    HeadlinedSectionView(headline: "Title") {
+        Text("Content")
+    }
+}
