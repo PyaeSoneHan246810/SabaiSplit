@@ -130,7 +130,6 @@ private extension CreateBillSplitView {
             personList.append(newPerson)
         }
     }
-    
     func adjustPersonList(numberOfPeople: Int) {
         if numberOfPeople > personList.count {
             for number in (personList.count + 1)...numberOfPeople {

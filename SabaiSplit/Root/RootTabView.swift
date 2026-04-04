@@ -11,24 +11,6 @@ struct RootTabView: View {
     @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
     @State private var isWelcomeSheetPresented: Bool = false
     var body: some View {
-        mainTabView
-        .onAppear {
-            isWelcomeSheetPresented = promptPayPhoneNumber == nil
-        }
-        .onChange(of: promptPayPhoneNumber) { _, newValue in
-            isWelcomeSheetPresented = newValue == nil
-        }
-        .sheet(isPresented: $isWelcomeSheetPresented) {
-            WelcomeView()
-                .wrapsWithNavigationStack()
-                .presentationDetents([.medium])
-                .interactiveDismissDisabled()
-        }
-    }
-}
-
-private extension RootTabView {
-    var mainTabView: some View {
         TabView {
             Tab("Quick Split", systemImage: "qrcode") {
                 QuickSplitTabView()
@@ -48,6 +30,18 @@ private extension RootTabView {
             }
         }
         .tint(.mint)
+        .onAppear {
+            isWelcomeSheetPresented = promptPayPhoneNumber == nil
+        }
+        .onChange(of: promptPayPhoneNumber) { _, newValue in
+            isWelcomeSheetPresented = newValue == nil
+        }
+        .sheet(isPresented: $isWelcomeSheetPresented) {
+            WelcomeView()
+                .wrapsWithNavigationStack()
+                .presentationDetents([.medium])
+                .interactiveDismissDisabled()
+        }
     }
 }
 

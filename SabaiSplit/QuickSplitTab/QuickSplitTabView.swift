@@ -16,12 +16,10 @@ struct QuickSplitTabView: View {
     @State private var tipPercentage: Double = 0.0
     @State private var tipPercentageText: String = ""
     @State private var amountPerPerson: Double = 0.0
-    @State private var qrCodeString: String? = nil
     @State private var qrCodeImage: UIImage? = nil
-    @State private var isqrCodeImageGenerated: Bool = false
+    @State private var isQRCodeImageGenerated: Bool = false
     private let qrCodeImageGenerator = QrCodeImageGenerator()
     private let qrCodeImageSize: CGFloat = 300.0
-
     var body: some View {
         ScrollView(.vertical) {
             VStack(spacing: 32.0) {
@@ -32,7 +30,7 @@ struct QuickSplitTabView: View {
                     amountForEachPersonView
                     generateQrCodeButtonView
                 }
-                if isqrCodeImageGenerated {
+                if isQRCodeImageGenerated {
                     VStack(spacing: 20.0) {
                         scanToPayView
                         resetButtonView
@@ -139,8 +137,8 @@ private extension QuickSplitTabView {
             return
         }
         withAnimation {
-            isqrCodeImageGenerated = false
-            qrCodeString = PromptPayQRStringGenerator.generateQRString(
+            isQRCodeImageGenerated = false
+            let qrCodeString = PromptPayQRStringGenerator.generateQRString(
                 promptPayPhoneNumber: promptPayPhoneNumber,
                 amount: amountPerPerson
             )
@@ -148,7 +146,7 @@ private extension QuickSplitTabView {
                 let amountText = "฿\(String(format: "%.2f", amountPerPerson))"
                 qrCodeImage = qrCodeImageGenerator.generateQRCodeImage(from: qrCodeString, size: qrCodeImageSize, bottomText: amountText)
             }
-            isqrCodeImageGenerated = true
+            isQRCodeImageGenerated = true
         }
     }
     
@@ -161,9 +159,8 @@ private extension QuickSplitTabView {
             tipPercentage = 0.0
             tipPercentageText = ""
             amountPerPerson = 0.0
-            qrCodeString = nil
             qrCodeImage = nil
-            isqrCodeImageGenerated = false
+            isQRCodeImageGenerated = false
         }
     }
 }

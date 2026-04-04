@@ -14,6 +14,7 @@ struct StatisticsTabView: View {
     @Query private var allPersonList: [Person]
     @Query(filter: #Predicate<Person> { $0.hasPaid }) private var paidPersonList: [Person]
     @Query(filter: #Predicate<Person> { !$0.hasPaid }) private var unpaidPersonList: [Person]
+    @State private var selectedUnpaidPerson: Person? = nil
     private var unpaidPersonListSorted: [Person] {
         unpaidPersonList.sorted { ($0.billSplit?.date ?? .distantPast) > ($1.billSplit?.date ?? .distantPast) }
     }
@@ -48,7 +49,6 @@ struct StatisticsTabView: View {
     private var totalPendingAmount: Double {
         unpaidPersonList.reduce(0) { $0 + $1.amount }
     }
-    @State private var selectedUnpaidPerson: Person? = nil
     var body: some View {
         ScrollView(.vertical) {
             VStack(spacing: 20.0) {

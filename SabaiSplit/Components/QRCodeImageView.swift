@@ -10,6 +10,13 @@ import SwiftUI
 struct QRCodeImageView: View {
     var uiImage: UIImage?
     let size: CGFloat
+    @State private var saveResult: SaveResult? = nil
+
+    private enum SaveResult {
+        case success
+        case failure(String)
+    }
+
     var body: some View {
         VStack(spacing: 8.0) {
             if let uiImage {
@@ -39,10 +46,29 @@ struct QRCodeImageView: View {
             Button("Save QR Code") {
                 guard let uiImage else { return }
                 let imageSaver = ImageSaver()
-                imageSaver.writeToPhotoAlbum(uiImage: uiImage)
+                imageSaver.writeToPhotoAlbum(uiImage: uiImage) { error in
+                    if let error {
+                        saveResult = .failure(error.localizedDescription)
+                    } else {
+                        saveResult = .success
+                    }
+                }
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
+            .disabled(uiImage == nil)
+            if let saveResult {
+                switch saveResult {
+                case .success:
+                    Label("Saved to Photos", systemImage: "checkmark.circle.fill")
+                        .font(.caption)
+                        .foregroundStyle(.green)
+                case .failure(let message):
+                    Label(message, systemImage: "exclamationmark.circle.fill")
+                        .font(.caption)
+                        .foregroundStyle(.pink)
+                }
+            }
         }
     }
 }

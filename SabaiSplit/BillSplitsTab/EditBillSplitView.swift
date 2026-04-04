@@ -17,14 +17,23 @@ struct EditBillSplitView: View {
     @State private var draftPersonList: [DraftPerson] = []
     @State private var deletedPersistentIDs: [PersistentIdentifier] = []
     @State private var pendingAdjustment: PendingAdjustment? = nil
-    @FocusState private var focusedAmountID: UUID?
     @State private var amountSnapshot: [UUID: Double] = [:]
+    @FocusState private var focusedAmountID: UUID?
     let billSplit: BillSplit
     private var disableConfirmButton: Bool {
         title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     var body: some View {
-        mainScrollView
+        ScrollView(.vertical) {
+            VStack(spacing: 20.0) {
+                editTitleView
+                editDateView
+                editPeopleListView
+            }
+        }
+        .contentMargins(16.0)
+        .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.immediately)
         .navigationTitle("Edit Bill Split")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -40,18 +49,6 @@ struct EditBillSplitView: View {
 }
 
 private extension EditBillSplitView {
-    var mainScrollView: some View {
-        ScrollView(.vertical) {
-            VStack(spacing: 20.0) {
-                editTitleView
-                editDateView
-                editPeopleListView
-            }
-        }
-        .contentMargins(16.0)
-        .scrollIndicators(.hidden)
-        .scrollDismissesKeyboard(.immediately)
-    }
     @ToolbarContentBuilder
     var toolbarContentView: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
@@ -156,7 +153,6 @@ private extension EditBillSplitView {
     }
 }
 
-// MARK: - Types
 private extension EditBillSplitView {
     struct DraftPerson: Identifiable {
         let id: UUID
@@ -209,7 +205,6 @@ private extension EditBillSplitView {
     }
 }
 
-// MARK: - Logic
 private extension EditBillSplitView {
     func initStates() {
         title = billSplit.title

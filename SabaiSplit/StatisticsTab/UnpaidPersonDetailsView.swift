@@ -27,6 +27,7 @@ struct UnpaidPersonDetailsView: View {
                 )
                 Button {
                     unpaidPerson.hasPaid = true
+                    unpaidPerson.paidDate = Date()
                     do {
                         try modelContext.save()
                         dismiss()

@@ -8,11 +8,14 @@
 import SwiftUI
 
 class ImageSaver: NSObject {
-    func writeToPhotoAlbum(uiImage: UIImage) {
+    var onComplete: ((Error?) -> Void)?
+
+    func writeToPhotoAlbum(uiImage: UIImage, onComplete: ((Error?) -> Void)? = nil) {
+        self.onComplete = onComplete
         UIImageWriteToSavedPhotosAlbum(uiImage, self, #selector(saveCompleted), nil)
     }
 
     @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
-        print("Save finished!")
+        onComplete?(error)
     }
 }

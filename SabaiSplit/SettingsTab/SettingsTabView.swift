@@ -9,9 +9,9 @@ import SwiftUI
 import CloudKit
 
 struct SettingsTabView: View {
+    @Environment(ICloudStatusProvider.self) private var icloudStatusProvider: ICloudStatusProvider
     @AppStorage(AppStorageKeys.colorMode) private var selectedColorMode: ColorMode = .system
     @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
-    @Environment(ICloudStatusProvider.self) private var icloudStatusProvider: ICloudStatusProvider
     @State private var isPromptPayNumberEditSheetPresented: Bool = false
     @State private var newPromptPayPhoneNumber: String = ""
     private var isPromptPayPhoneNumberValid: Bool {
@@ -20,9 +20,9 @@ struct SettingsTabView: View {
     private var appName: String {
         Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Sabai Split"
     }
-    private var appDescription: String = "Split bills instantly, generate a PromptPay QR code for each share, track who's paid, and organize your bill splits."
-    private var appDeveloper: String = "Pyae Sone Han"
-    private var appDesigner: String = "Pyae Sone Han"
+    private let appDescription: String = "Split bills instantly, generate a PromptPay QR code for each share, track who's paid, and organize your bill splits."
+    private let appDeveloper: String = "Pyae Sone Han"
+    private let appDesigner: String = "Pyae Sone Han"
     private var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "-"
     }

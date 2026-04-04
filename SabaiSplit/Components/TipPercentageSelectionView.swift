@@ -1,5 +1,5 @@
 //
-//  TipOptionSelectionView.swift
+//  TipPercentageSelectionView.swift
 //  SabaiSplit
 //
 //  Created by Dylan on 3/4/26.
@@ -11,7 +11,7 @@ struct TipPercentageSelectionView: View {
     @Binding var selectedTipOption: TipOption
     @Binding var tipPercentage: Double
     @Binding var tipPercentageText: String
-    @State private var isOtherTipInputVisiable: Bool = false
+    @State private var isOtherTipInputVisible: Bool = false
     @FocusState private var isTipPercentageFocused: Bool
     private func isTipOptionSelected(_ option: TipOption) -> Bool {
         option == selectedTipOption
@@ -37,7 +37,7 @@ struct TipPercentageSelectionView: View {
                         }
                 }
             }
-            if isOtherTipInputVisiable {
+            if isOtherTipInputVisible {
                 HStack(spacing: 16.0) {
                     TextField("0.0", text: $tipPercentageText)
                         .keyboardType(.decimalPad)
@@ -65,23 +65,23 @@ struct TipPercentageSelectionView: View {
                 case .noTip:
                     tipPercentage = 0.0
                     tipPercentageText = ""
-                    isOtherTipInputVisiable = false
+                    isOtherTipInputVisible = false
                 case .tip10:
                     tipPercentage = 10.0
                     tipPercentageText = ""
-                    isOtherTipInputVisiable = false
+                    isOtherTipInputVisible = false
                 case .tip15:
                     tipPercentage = 15.0
                     tipPercentageText = ""
-                    isOtherTipInputVisiable = false
+                    isOtherTipInputVisible = false
                 case .tip20:
                     tipPercentage = 20.0
                     tipPercentageText = ""
-                    isOtherTipInputVisiable = false
+                    isOtherTipInputVisible = false
                 case .other:
                     tipPercentage = 0.0
                     tipPercentageText = ""
-                    isOtherTipInputVisiable = true
+                    isOtherTipInputVisible = true
                 }
             }
         }

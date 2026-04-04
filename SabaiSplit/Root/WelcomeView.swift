@@ -59,7 +59,7 @@ private extension WelcomeView {
         Button {
             savedPromptPayPhoneNumber = promptPayPhoneNumber
         } label: {
-            Label("Save", systemImage: "")
+            Label("Save", systemImage: "checkmark")
                 .primaryButtonStyle()
         }
         .disabled(!isPromptPayPhoneNumberValid)

@@ -9,21 +9,14 @@ import SwiftUI
 import SwiftData
 
 struct BillSplitDetailsView: View {
-    @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
+    @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
     @State private var personQrItem: PersonQrItem? = nil
     @State private var isEditBillSplitSheetPresented: Bool = false
     let billSplit: BillSplit
     private let qrCodeImageGenerator = QrCodeImageGenerator()
     private let qrCodeImageSize: CGFloat = 300.0
-    struct PersonQrItem: Identifiable {
-        let person: Person
-        let qrCodeImage: UIImage
-        var id: PersistentIdentifier {
-            person.id
-        }
-    }
     var body: some View {
         ScrollView(.vertical) {
             VStack(spacing: 20.0) {
@@ -55,6 +48,16 @@ struct BillSplitDetailsView: View {
             personQrSheetView(personQrItem: item)
                 .wrapsWithNavigationStack()
                 .interactiveDismissDisabled()
+        }
+    }
+}
+
+private extension BillSplitDetailsView {
+    struct PersonQrItem: Identifiable {
+        let person: Person
+        let qrCodeImage: UIImage
+        var id: PersistentIdentifier {
+            person.id
         }
     }
 }
