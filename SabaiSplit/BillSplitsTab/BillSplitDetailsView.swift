@@ -117,7 +117,7 @@ private extension BillSplitDetailsView {
         }
     }
     var peopleListView: some View {
-        ForEach(billSplit.personList) { person in
+        ForEach(billSplit.nonNilPersonList) { person in
             HStack(spacing: 8.0) {
                 personPaidToggleView(person)
                 personInfoView(person)

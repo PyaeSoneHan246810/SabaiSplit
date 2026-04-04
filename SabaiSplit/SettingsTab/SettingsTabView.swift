@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct SettingsTabView: View {
     @AppStorage(AppStorageKeys.colorMode) private var selectedColorMode: ColorMode = .system
     @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
+    @Environment(ICloudStatusProvider.self) private var icloudStatusProvider: ICloudStatusProvider
     @State private var isPromptPayNumberEditSheetPresented: Bool = false
     @State private var newPromptPayPhoneNumber: String = ""
     private var isPromptPayPhoneNumberValid: Bool {
@@ -30,6 +32,7 @@ struct SettingsTabView: View {
     var body: some View {
         Form {
             aboutSectionView
+            iCloudStatusSectionView
             customizationSectionView
             appSettingsSectionView
             applicationSectionView
@@ -69,7 +72,7 @@ private extension SettingsTabView {
                         .font(.title3)
                         .fontWeight(.semibold)
                     Text(appDescription)
-                        .font(.callout)
+                        .font(.footnote)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Image(.appIcon)
@@ -105,6 +108,69 @@ private extension SettingsTabView {
                 }
             }
         }
+    }
+    var iCloudStatusSectionView: some View {
+        Section {
+            switch icloudStatusProvider.accountStatus {
+            case .couldNotDetermine:
+                iCloudStatusView(
+                    title: "iCloud Status Unknown",
+                    image: "icloud.slash",
+                    desc: "Unable to determine your iCloud status. Please check your internet connection and try again.",
+                    color: .orange
+                )
+            case .available:
+                iCloudStatusView(
+                    title: "iCloud is On",
+                    image: "icloud",
+                    desc: "Your data will sync and backup automatically across devices.",
+                    color: .green
+                )
+            case .restricted:
+                iCloudStatusView(
+                    title: "iCloud is Restricted",
+                    image: "icloud.slash",
+                    desc: "iCloud access is restricted, possibly due to parental controls or a device management policy.",
+                    color: .orange
+                )
+            case .noAccount:
+                iCloudStatusView(
+                    title: "Not Signed In to iCloud",
+                    image: "person.icloud",
+                    desc: "Sign in to your Apple Account in Settings to enable sync and backup.",
+                    color: .red
+                )
+            case .temporarilyUnavailable:
+                iCloudStatusView(
+                    title: "iCloud Unavailable",
+                    image: "icloud.slash",
+                    desc: "iCloud is temporarily unavailable. Your data will sync automatically once it is restored.",
+                    color: .yellow
+                )
+            case .none, .some(_):
+                iCloudStatusView(
+                    title: "iCloud Status Unknown",
+                    image: "icloud.slash",
+                    desc: "An unexpected iCloud status was encountered. Please check your iCloud settings.",
+                    color: .gray
+                )
+            }
+        }
+    }
+    func iCloudStatusView(title: String, image: String, desc: String, color: Color) -> some View {
+        VStack {
+            LabeledContent {
+                Image(systemName: image)
+            } label: {
+                Text(title)
+                    .font(.headline)
+            }
+            Text(desc)
+                .font(.footnote)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .listRowBackground(color.opacity(0.1))
     }
     var applicationSectionView: some View {
         Section {
@@ -154,8 +220,11 @@ private extension SettingsTabView {
     }
 }
 
+
 #Preview {
+    @Previewable @State var iCloudStatusProvider: ICloudStatusProvider = .init()
     SettingsTabView()
         .wrapsWithNavigationStack()
         .tint(.mint)
+        .environment(iCloudStatusProvider)
 }

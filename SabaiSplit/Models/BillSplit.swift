@@ -15,7 +15,7 @@ final class BillSplit {
     var tipPercentage: Double = 0.0
     var date: Date = Date()
     @Relationship(deleteRule: .cascade, inverse: \Person.billSplit)
-    var personList: [Person] = []
+    var personList: [Person]? = nil
     init(title: String, totalAmount: Double, tipPercentage: Double, date: Date = Date(), personList: [Person] = []) {
         self.title = title
         self.totalAmount = totalAmount
@@ -23,14 +23,17 @@ final class BillSplit {
         self.date = date
         self.personList = personList
     }
+    var nonNilPersonList: [Person] {
+        personList ?? []
+    }
     var numberOfPerson: Int {
-        personList.count
+        nonNilPersonList.count
     }
     var numberOfPaidPerson: Int {
-        personList.filter { $0.hasPaid }.count
+        nonNilPersonList.filter { $0.hasPaid }.count
     }
     var isAllPaid: Bool {
-        !personList.isEmpty && personList.allSatisfy { $0.hasPaid }
+        !nonNilPersonList.isEmpty && nonNilPersonList.allSatisfy { $0.hasPaid }
     }
     var ratio: String {
         "\(numberOfPaidPerson)/\(numberOfPerson)"
@@ -41,10 +44,10 @@ final class BillSplit {
         return totalWithTip
     }
     var paidAmount: Double {
-        personList.filter { $0.hasPaid }.reduce(0) { $0 + $1.amount }
+        nonNilPersonList.filter { $0.hasPaid }.reduce(0) { $0 + $1.amount }
     }
     var remainingAmount: Double {
-        personList.filter { !$0.hasPaid }.reduce(0) { $0 + $1.amount }
+        nonNilPersonList.filter { !$0.hasPaid }.reduce(0) { $0 + $1.amount }
     }
 }
 

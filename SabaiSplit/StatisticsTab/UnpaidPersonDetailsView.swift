@@ -75,7 +75,7 @@ private extension UnpaidPersonDetailsView {
 
 #Preview {
     UnpaidPersonDetailsView(
-        unpaidPerson: BillSplit.sample.personList.first!
+        unpaidPerson: BillSplit.sample.nonNilPersonList.first!
     )
     .tint(.mint)
 }

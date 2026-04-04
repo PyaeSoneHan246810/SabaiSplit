@@ -30,5 +30,5 @@ struct UnpaidPersonItemView: View {
 }
 
 #Preview {
-    UnpaidPersonItemView(person: BillSplit.sample.personList.first!)
+    UnpaidPersonItemView(person: BillSplit.sample.nonNilPersonList.first!)
 }

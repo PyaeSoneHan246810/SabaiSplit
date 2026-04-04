@@ -215,7 +215,7 @@ private extension EditBillSplitView {
         title = billSplit.title
         date = billSplit.date
         totalAmount = billSplit.totalAmount
-        draftPersonList = billSplit.personList.map {
+        draftPersonList = billSplit.nonNilPersonList.map {
             DraftPerson(
                 persistentID: $0.persistentModelID,
                 name: $0.name,
@@ -230,13 +230,13 @@ private extension EditBillSplitView {
         billSplit.date = date
         billSplit.totalAmount = totalAmount
         for persistentID in deletedPersistentIDs {
-            if let person = billSplit.personList.first(where: { $0.persistentModelID == persistentID }) {
+            if let person = billSplit.nonNilPersonList.first(where: { $0.persistentModelID == persistentID }) {
                 modelContext.delete(person)
             }
         }
         for draft in draftPersonList {
             if let persistentID = draft.persistentID,
-               let person = billSplit.personList.first(where: { $0.persistentModelID == persistentID }) {
+               let person = billSplit.nonNilPersonList.first(where: { $0.persistentModelID == persistentID }) {
                 person.name = draft.name
                 person.amount = draft.amount
             } else if draft.persistentID == nil {
