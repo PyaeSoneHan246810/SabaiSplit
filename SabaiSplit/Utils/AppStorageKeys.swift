@@ -7,4 +7,5 @@
 
 class AppStorageKeys {
     static let promptPayPhoneNumber: String = "promptPayPhoneNumber"
+    static let colorMode: String = "colorMode"
 }

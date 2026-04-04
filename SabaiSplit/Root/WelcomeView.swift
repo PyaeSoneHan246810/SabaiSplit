@@ -10,6 +10,9 @@ import SwiftUI
 struct WelcomeView: View {
     @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var savedPromptPayPhoneNumber: String?
     @State private var promptPayPhoneNumber: String = ""
+    private var isPromptPayPhoneNumberValid: Bool {
+        PromptPayQRStringGenerator.formatPhoneNumber(promptPayPhoneNumber) != nil
+    }
     var body: some View {
         ScrollView(.vertical) {
             VStack(spacing: 32.0) {
@@ -33,22 +36,19 @@ private extension WelcomeView {
                 .font(.largeTitle)
                 .fontWeight(.semibold)
                 .foregroundStyle(.mint.gradient)
-            Text("Quick bill splits, instant PromptPay QR codes, and tracking made easy.")
+            Text("Split and track bills easily, and get instant PromptPay QR codes.")
         }
         .multilineTextAlignment(.leading)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-    var isPhoneNumberValid: Bool {
-        PromptPayQRStringGenerator.formatPhoneNumber(promptPayPhoneNumber) != nil
-    }
     var setPromptPayPhoneNumberView: some View {
         VStack(alignment: .leading, spacing: 8.0) {
-            Text("Set Prompt Pay Phone Number")
+            Text("Set PromptPay Phone Number")
                 .font(.headline)
             TextField("Enter your number", text: $promptPayPhoneNumber)
                 .keyboardType(.phonePad)
                 .backgroundCardStyle(height: 60.0)
-            if !promptPayPhoneNumber.isEmpty && !isPhoneNumberValid {
+            if !promptPayPhoneNumber.isEmpty && !isPromptPayPhoneNumberValid {
                 Text("Please enter a valid 10-digit Thai phone number starting with 0")
                     .font(.caption)
                     .foregroundStyle(.pink)
@@ -62,7 +62,7 @@ private extension WelcomeView {
             Label("Save", systemImage: "")
                 .primaryButtonStyle()
         }
-        .disabled(!isPhoneNumberValid)
+        .disabled(!isPromptPayPhoneNumberValid)
     }
 }
 

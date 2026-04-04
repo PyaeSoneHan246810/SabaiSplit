@@ -10,9 +10,11 @@ import SwiftData
 
 @main
 struct SabaiSplitApp: App {
+    @AppStorage(AppStorageKeys.colorMode) private var selectedColorMode: ColorMode = .system
     var body: some Scene {
         WindowGroup {
             StartingView()
+                .preferredColorScheme(selectedColorMode.colorScheme)
         }
         .modelContainer(for: BillSplit.self)
     }

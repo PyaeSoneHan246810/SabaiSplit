@@ -19,7 +19,7 @@ struct ScanToPayView: View {
             QRCodeImageView(uiImage: qrCodeImage, size: qrCodeImageSize)
             VStack(spacing: 4.0) {
                 HStack {
-                    Text("Prompt Pay Phone Number:")
+                    Text("PromptPay Phone Number:")
                         .font(.body)
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
