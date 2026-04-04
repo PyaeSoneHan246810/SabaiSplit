@@ -16,7 +16,7 @@ struct BillSplitItemView: View {
                     .font(.headline)
                     .fontWeight(.semibold)
                 Spacer()
-                BahtTextView(amount: billSplit.totalAmount)
+                BahtTextView(amount: billSplit.totalAmountIncludingTip)
                     .foregroundStyle(.mint)
                 Image(systemName: "chevron.right")
                     .foregroundStyle(.secondary)

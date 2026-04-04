@@ -35,6 +35,11 @@ final class BillSplit {
     var ratio: String {
         "\(numberOfPaidPerson)/\(numberOfPerson)"
     }
+    var totalAmountIncludingTip: Double {
+        let tipAmount = totalAmount * (tipPercentage / 100.0)
+        let totalWithTip = totalAmount + tipAmount
+        return totalWithTip
+    }
     var paidAmount: Double {
         personList.filter { $0.hasPaid }.reduce(0) { $0 + $1.amount }
     }

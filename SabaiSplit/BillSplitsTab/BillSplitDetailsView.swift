@@ -12,8 +12,9 @@ struct BillSplitDetailsView: View {
     @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
     @Environment(\.modelContext) private var modelContext: ModelContext
     @Environment(\.colorScheme) private var colorScheme: ColorScheme
-    let billSplit: BillSplit
     @State private var personQrItem: PersonQrItem? = nil
+    @State private var isEditBillSplitSheetPresented: Bool = false
+    let billSplit: BillSplit
     private let qrCodeImageGenerator = QrCodeImageGenerator()
     private let qrCodeImageSize: CGFloat = 300.0
     struct PersonQrItem: Identifiable {
@@ -38,6 +39,18 @@ struct BillSplitDetailsView: View {
         .contentMargins(16.0)
         .navigationTitle(billSplit.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("Edit", systemImage: "pencil") {
+                    isEditBillSplitSheetPresented = true
+                }
+            }
+        }
+        .sheet(isPresented: $isEditBillSplitSheetPresented) {
+            EditBillSplitView(billSplit: billSplit)
+                .wrapsWithNavigationStack()
+                .interactiveDismissDisabled()
+        }
         .sheet(item: $personQrItem) { item in
             personQrSheetView(personQrItem: item)
                 .wrapsWithNavigationStack()
@@ -58,7 +71,7 @@ private extension BillSplitDetailsView {
             }
             .font(.headline)
             HStack {
-                BahtTextView(amount: billSplit.totalAmount)
+                BahtTextView(amount: billSplit.totalAmountIncludingTip)
                     .font(.largeTitle)
                     .fontWeight(.semibold)
                     .foregroundStyle(.mint)
@@ -88,6 +101,12 @@ private extension BillSplitDetailsView {
                     .multilineTextAlignment(.trailing)
                 }
                 .font(.callout)
+            }
+            HStack {
+                Spacer()
+                Text(billSplit.date, format: .dateTime.day().month().year())
+                    .font(.caption)
+                    .fontWeight(.medium)
             }
         }
         .padding(16.0)

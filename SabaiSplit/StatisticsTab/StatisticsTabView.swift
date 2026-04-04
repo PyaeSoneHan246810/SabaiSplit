@@ -40,7 +40,7 @@ struct StatisticsTabView: View {
         return Double(paidPeopleCount) / Double(allPeopleCount) * 100
     }
     private var totalAmount: Double {
-        allBillSplits.reduce(0) { $0 + $1.totalAmount }
+        allBillSplits.reduce(0) { $0 + $1.totalAmountIncludingTip }
     }
     private var totalCollectedAmount: Double {
         paidPersonList.reduce(0) { $0 + $1.amount }
