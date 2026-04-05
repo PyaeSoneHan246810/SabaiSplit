@@ -41,11 +41,7 @@ struct BillSplitsListView: View {
                     titleVisibility: .visible
                 ) {
                     Button("Confirm", role: .destructive) {
-                        do {
-                            try modelContext.delete(model: BillSplit.self)
-                        } catch {
-                            print(error.localizedDescription)
-                        }
+                        deleteAllBillSplit()
                     }
                     Button("Cancel") {
                         isDeleteAllConfirmationPresented = false
@@ -58,6 +54,16 @@ struct BillSplitsListView: View {
     }
     private func deleteBillSplit(_ billSplit: BillSplit) {
         modelContext.delete(billSplit)
+        do {
+            try modelContext.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    private func deleteAllBillSplit() {
+        billSplits.forEach { billSplit in
+            modelContext.delete(billSplit)
+        }
         do {
             try modelContext.save()
         } catch {
