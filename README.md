@@ -1,39 +1,17 @@
-# SabaiSplit
+# Sabai Split
 
-A SwiftUI iOS application built for the App Store.
+## 📱 Project Overview
 
-## Requirements
+**Sabai Split** makes splitting bills with friends, family, and colleagues effortless. Enter the total, add a tip, and instantly generate a PromptPay QR code for each person's share. Track who has paid and who hasn't, and keep all your bill splits organized in one place.
 
-- Xcode 15+
-- iOS 17+
-- Swift 5.9+
+<img width="240" height="240" src="https://github.com/user-attachments/assets/a466869b-d971-44fa-90d3-19b44b2d40cf" />
+<img width="240" height="240" src="https://github.com/user-attachments/assets/7742dc97-b2be-4767-ab10-92daf69ba131" />
 
-## Getting Started
+## 🧩 Tech Stack
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd SabaiSplit
-   ```
-
-2. Open the project in Xcode:
-   ```bash
-   open SabaiSplit.xcodeproj
-   ```
-
-3. Select a simulator or connected device and press **Run** (`Cmd+R`).
-
-## Project Structure
-
-```
-SabaiSplit/
-├── SabaiSplit/
-│   ├── SabaiSplitApp.swift   # App entry point
-│   ├── ContentView.swift     # Root view
-│   └── Assets.xcassets/      # Images, colors, app icon
-└── SabaiSplit.xcodeproj/     # Xcode project file
-```
-
-## License
-
-Copyright © 2026 Dylan. All rights reserved.
+### 💻 Programming Language & Frameworks
+- Swift Programming Language
+- SwiftUI Framework
+- Observation Framework
+- SwiftData Framework
+- CloudKit Framework
