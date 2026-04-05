@@ -80,16 +80,30 @@ private extension StatisticsTabView {
                     label: "Total bill splits",
                     titleColor: Color.mint
                 )
-                StatisticCardView(
-                    title: "\(completedBillSplitsCount)",
-                    label: "Completed",
-                    titleColor: Color.green
-                )
-                StatisticCardView(
-                    title: "\(activeBillSplitsCount)",
-                    label: "In progress",
-                    titleColor: Color.orange
-                )
+                NavigationLink {
+                    FilteredBillSplitsView(
+                        filterOption: .completed
+                    )
+                } label: {
+                    StatisticCardView(
+                        title: "\(completedBillSplitsCount)",
+                        label: "Completed",
+                        titleColor: Color.green
+                    )
+                }
+                .buttonStyle(.plain)
+                NavigationLink {
+                    FilteredBillSplitsView(
+                        filterOption: .inProgress
+                    )
+                } label: {
+                    StatisticCardView(
+                        title: "\(activeBillSplitsCount)",
+                        label: "In progress",
+                        titleColor: Color.orange
+                    )
+                }
+                .buttonStyle(.plain)
             }
             HStack(spacing: 10.0) {
                 StatisticCardView(

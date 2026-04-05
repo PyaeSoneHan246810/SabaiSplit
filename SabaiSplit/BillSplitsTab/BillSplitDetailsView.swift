@@ -30,7 +30,7 @@ struct BillSplitDetailsView: View {
         }
         .scrollIndicators(.hidden)
         .contentMargins(16.0)
-        .navigationTitle(billSplit.title)
+        .navigationTitle(Text(billSplit.title))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -187,7 +187,7 @@ private extension BillSplitDetailsView {
         }
         .scrollIndicators(.hidden)
         .contentMargins(16.0)
-        .navigationTitle(personQrItem.person.name)
+        .navigationTitle(Text(personQrItem.person.name))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {

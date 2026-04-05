@@ -35,7 +35,7 @@ struct EditBillSplitView: View {
         .contentMargins(16.0)
         .scrollIndicators(.hidden)
         .scrollDismissesKeyboard(.immediately)
-        .navigationTitle("Edit Bill Split")
+        .navigationTitle(Text("Edit Bill Split"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             toolbarContentView

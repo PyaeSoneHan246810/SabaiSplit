@@ -42,7 +42,7 @@ struct UnpaidPersonDetailsView: View {
         }
         .contentMargins(16.0)
         .scrollIndicators(.hidden)
-        .navigationTitle(unpaidPerson.name)
+        .navigationTitle(Text(unpaidPerson.name))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {

@@ -12,7 +12,6 @@ struct BillSplitsTabView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \BillSplit.date, order: .reverse) private var billSplits: [BillSplit]
     @State private var isCreateBillSplitSheetPresented: Bool = false
-    @State private var isDeleteAllConfirmationPresented: Bool = false
     var body: some View {
         billSplitsListView
         .navigationTitle(Text("Bill Splits"))
@@ -43,59 +42,9 @@ struct BillSplitsTabView: View {
                 .buttonStyle(.borderedProminent)
             }
         } else {
-            List {
-                ForEach(billSplits) { billSplit in
-                    NavigationLink {
-                        BillSplitDetailsView(billSplit: billSplit)
-                    } label: {
-                        BillSplitItemView(billSplit: billSplit)
-                    }
-                    .navigationLinkIndicatorVisibility(.hidden)
-                }
-                .onDelete { indexSet in
-                    indexSet.forEach { index in
-                        let billSplit = billSplits[index]
-                        deleteBillSplit(billSplit)
-                    }
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Delete All", systemImage: "trash", role: .destructive) {
-                        isDeleteAllConfirmationPresented = true
-                    }
-                    .tint(.pink)
-                    .confirmationDialog(
-                        "Delete All Bill Splits",
-                        isPresented: $isDeleteAllConfirmationPresented,
-                        titleVisibility: .visible
-                    ) {
-                        Button("Confirm", role: .destructive) {
-                            do {
-                                try modelContext.delete(model: BillSplit.self)
-                            } catch {
-                                print(error.localizedDescription)
-                            }
-                        }
-                        Button("Cancel") {
-                            isDeleteAllConfirmationPresented = false
-                        }
-                    } message: {
-                        Text("Are you sure to delete all of the bill splits you saved?")
-                    }
-                }
-            }
-        }
-    }
-}
-
-private extension BillSplitsTabView {
-    func deleteBillSplit(_ billSplit: BillSplit) {
-        modelContext.delete(billSplit)
-        do {
-            try modelContext.save()
-        } catch {
-            print(error.localizedDescription)
+            BillSplitsListView(
+                billSplits: billSplits
+            )
         }
     }
 }
