@@ -35,20 +35,17 @@ struct BillSplitsListView: View {
                     isDeleteAllConfirmationPresented = true
                 }
                 .tint(.pink)
-                .confirmationDialog(
-                    "Delete All Bill Splits",
+                .alert(
+                    "Delete All",
                     isPresented: $isDeleteAllConfirmationPresented,
-                    titleVisibility: .visible
-                ) {
-                    Button("Confirm", role: .destructive) {
-                        deleteAllBillSplit()
+                    actions: {
+                        Button("Confirm", role: .destructive) {
+                            deleteAllBillSplit()
+                        }
+                    }, message: {
+                        Text("Are you sure to delete all of the bill splits here?")
                     }
-                    Button("Cancel") {
-                        isDeleteAllConfirmationPresented = false
-                    }
-                } message: {
-                    Text("Are you sure to delete all of the bill splits you saved?")
-                }
+                )
             }
         }
     }
