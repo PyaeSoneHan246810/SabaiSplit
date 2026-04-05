@@ -66,7 +66,7 @@ private extension BillSplitDetailsView {
     var summaryCardView: some View {
         VStack(spacing: 8.0) {
             HStack {
-                Text("Total Amount")
+                Text("Total Amount with Tip")
                     .multilineTextAlignment(.leading)
                 Spacer()
                 Text("Paid")

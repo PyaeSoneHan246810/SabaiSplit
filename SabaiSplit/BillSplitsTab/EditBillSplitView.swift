@@ -28,6 +28,7 @@ struct EditBillSplitView: View {
             VStack(spacing: 20.0) {
                 editTitleView
                 editDateView
+                totalAmountAndTipView
                 editPeopleListView
             }
         }
@@ -80,6 +81,32 @@ private extension EditBillSplitView {
             Text("Date")
                 .font(.headline)
         }
+    }
+    var totalAmountAndTipView: some View {
+        VStack {
+            HStack {
+                Text("Total Amount with Tip")
+                    .multilineTextAlignment(.leading)
+                Spacer()
+                Text("Tip %")
+                    .multilineTextAlignment(.trailing)
+            }
+            .font(.headline)
+            HStack {
+                BahtTextView(amount: billSplit.totalAmountIncludingTip)
+                    .font(.title)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.mint)
+                    .multilineTextAlignment(.leading)
+                Spacer()
+                Text(billSplit.tipPercentage, format: .number.precision(.fractionLength(1)))
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .multilineTextAlignment(.trailing)
+            }
+            .font(.headline)
+        }
+        .backgroundCardStyle()
     }
     var editPeopleListView: some View {
         HeadlinedSectionView(headline: "People") {
@@ -266,7 +293,11 @@ private extension EditBillSplitView {
 
     func onDeleteTapped(draft: DraftPerson) {
         guard draftPersonList.count > 2 else { return }
-        pendingAdjustment = PendingAdjustment(kind: .personDeleted(draft: draft))
+        if draft.amount == 0.0 {
+            removeDraft(draft)
+        } else {
+            pendingAdjustment = PendingAdjustment(kind: .personDeleted(draft: draft))
+        }
     }
 
     func removeDraft(_ draft: DraftPerson) {
