@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RootTabView: View {
-    @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
+    @AppStorage(AppStorageKeys.hasCompletedOnboarding) private var hasCompletedOnboarding: Bool = false
     @State private var isWelcomeSheetPresented: Bool = false
     var body: some View {
         TabView {
@@ -31,10 +31,10 @@ struct RootTabView: View {
         }
         .tint(.mint)
         .onAppear {
-            isWelcomeSheetPresented = promptPayPhoneNumber == nil
+            isWelcomeSheetPresented = !hasCompletedOnboarding
         }
-        .onChange(of: promptPayPhoneNumber) { _, newValue in
-            isWelcomeSheetPresented = newValue == nil
+        .onChange(of: hasCompletedOnboarding) { _, newValue in
+            isWelcomeSheetPresented = !hasCompletedOnboarding
         }
         .sheet(isPresented: $isWelcomeSheetPresented) {
             WelcomeView()

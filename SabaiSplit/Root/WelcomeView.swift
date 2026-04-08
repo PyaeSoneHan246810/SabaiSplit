@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WelcomeView: View {
+    @AppStorage(AppStorageKeys.hasCompletedOnboarding) private var hasCompletedOnboarding: Bool = false
     @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var savedPromptPayPhoneNumber: String?
     @State private var promptPayPhoneNumber: String = ""
     private var isPromptPayPhoneNumberValid: Bool {
@@ -18,12 +19,13 @@ struct WelcomeView: View {
             VStack(spacing: 32.0) {
                 welcomeSectionView
                 setPromptPayPhoneNumberView
-                saveButtonView
+                buttonsView
             }
         }
         .contentMargins(16.0)
         .scrollIndicators(.hidden)
         .scrollDismissesKeyboard(.immediately)
+        .tint(.mint)
     }
 }
 
@@ -55,14 +57,21 @@ private extension WelcomeView {
             }
         }
     }
-    var saveButtonView: some View {
-        Button {
-            savedPromptPayPhoneNumber = promptPayPhoneNumber
-        } label: {
-            Text("Save")
-                .primaryButtonStyle()
+    var buttonsView: some View {
+        VStack(spacing: 12.0) {
+            Button {
+                savedPromptPayPhoneNumber = promptPayPhoneNumber
+                hasCompletedOnboarding = true
+            } label: {
+                Text("Save")
+                    .primaryButtonStyle()
+            }
+            .disabled(!isPromptPayPhoneNumberValid)
+            Button("Skip for now") {
+                savedPromptPayPhoneNumber = nil
+                hasCompletedOnboarding = true
+            }
         }
-        .disabled(!isPromptPayPhoneNumberValid)
     }
 }
 

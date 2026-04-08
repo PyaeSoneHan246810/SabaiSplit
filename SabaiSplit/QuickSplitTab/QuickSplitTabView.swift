@@ -18,6 +18,8 @@ struct QuickSplitTabView: View {
     @State private var amountPerPerson: Double = 0.0
     @State private var qrCodeImage: UIImage? = nil
     @State private var isQRCodeImageGenerated: Bool = false
+    @State private var isPromptPayNumberEditSheetPresented: Bool = false
+    @State private var currentQRCodePromptPayNumber: String? = nil
     private let qrCodeImageGenerator = QrCodeImageGenerator()
     private let qrCodeImageSize: CGFloat = 300.0
     var body: some View {
@@ -50,6 +52,18 @@ struct QuickSplitTabView: View {
         }
         .onChange(of: tipPercentage) {
             calculateAmountPerPerson()
+        }
+        .sheet(isPresented: $isPromptPayNumberEditSheetPresented) {
+            EditPromptPayPhoneNumberView(
+                isViewPresented: $isPromptPayNumberEditSheetPresented,
+                promptPayPhoneNumber: $promptPayPhoneNumber,
+                onSave: {
+                    generateQrCodeImage()
+                }
+            )
+            .wrapsWithNavigationStack()
+            .presentationDetents([.medium])
+            .interactiveDismissDisabled()
         }
     }
 }
@@ -108,7 +122,7 @@ private extension QuickSplitTabView {
         ScanToPayView(
             qrCodeImage: qrCodeImage,
             qrCodeImageSize: qrCodeImageSize,
-            promptPayPhoneNumber: promptPayPhoneNumber ?? "-",
+            promptPayPhoneNumber: currentQRCodePromptPayNumber ?? "-",
             amount: amountPerPerson
         )
     }
@@ -132,12 +146,13 @@ private extension QuickSplitTabView {
     }
     
     func generateQrCodeImage() {
-        guard let promptPayPhoneNumber else { return }
-        guard totalAmount > 0.0 && amountPerPerson > 0.0 else {
+        guard let promptPayPhoneNumber else {
+            isPromptPayNumberEditSheetPresented = true
             return
         }
         withAnimation {
             isQRCodeImageGenerated = false
+            currentQRCodePromptPayNumber = promptPayPhoneNumber
             let qrCodeString = PromptPayQRStringGenerator.generateQRString(
                 promptPayPhoneNumber: promptPayPhoneNumber,
                 amount: amountPerPerson
@@ -161,6 +176,7 @@ private extension QuickSplitTabView {
             amountPerPerson = 0.0
             qrCodeImage = nil
             isQRCodeImageGenerated = false
+            currentQRCodePromptPayNumber = nil
         }
     }
 }

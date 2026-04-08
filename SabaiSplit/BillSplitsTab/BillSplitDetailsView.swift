@@ -14,6 +14,7 @@ struct BillSplitDetailsView: View {
     @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
     @State private var personQrItem: PersonQrItem? = nil
     @State private var isEditBillSplitSheetPresented: Bool = false
+    @State private var isPromptPayNumberEditSheetPresented: Bool = false
     let billSplit: BillSplit
     private let qrCodeImageGenerator = QrCodeImageGenerator()
     private let qrCodeImageSize: CGFloat = 300.0
@@ -49,6 +50,15 @@ struct BillSplitDetailsView: View {
                 .wrapsWithNavigationStack()
                 .interactiveDismissDisabled()
         }
+        .sheet(isPresented: $isPromptPayNumberEditSheetPresented) {
+            EditPromptPayPhoneNumberView(
+                isViewPresented: $isPromptPayNumberEditSheetPresented,
+                promptPayPhoneNumber: $promptPayPhoneNumber
+            )
+            .wrapsWithNavigationStack()
+            .presentationDetents([.medium])
+            .interactiveDismissDisabled()
+        }
     }
 }
 
@@ -56,6 +66,7 @@ private extension BillSplitDetailsView {
     struct PersonQrItem: Identifiable {
         let person: Person
         let qrCodeImage: UIImage
+        let promptPayPhoneNumber: String
         var id: PersistentIdentifier {
             person.id
         }
@@ -165,10 +176,7 @@ private extension BillSplitDetailsView {
                 .foregroundStyle(person.hasPaid ? Color.secondary : Color.mint)
             if !person.hasPaid {
                 Button("QR", systemImage: "qrcode") {
-                    let image = generateQrCodeImage(amount: person.amount)
-                    if let image {
-                        personQrItem = PersonQrItem(person: person, qrCodeImage: image)
-                    }
+                    displayQrCodeImage(for: person)
                 }
                 .font(.footnote)
                 .buttonStyle(.bordered)
@@ -181,7 +189,7 @@ private extension BillSplitDetailsView {
             ScanToPayView(
                 qrCodeImage: personQrItem.qrCodeImage,
                 qrCodeImageSize: qrCodeImageSize,
-                promptPayPhoneNumber: promptPayPhoneNumber ?? "-",
+                promptPayPhoneNumber: personQrItem.promptPayPhoneNumber,
                 amount: personQrItem.person.amount
             )
         }
@@ -200,13 +208,30 @@ private extension BillSplitDetailsView {
 }
 
 private extension BillSplitDetailsView {
-    func generateQrCodeImage(amount: Double) -> UIImage? {
-        guard let promptPayPhoneNumber else { return nil }
-        guard amount > 0.0 else { return nil }
+    func displayQrCodeImage(for person: Person) {
+        guard let promptPayPhoneNumber else {
+            isPromptPayNumberEditSheetPresented = true
+            return
+        }
+        let image = generateQrCodeImage(
+            amount: person.amount,
+            promptPayPhoneNumber: promptPayPhoneNumber
+        )
+        if let image {
+            personQrItem = PersonQrItem(
+                person: person,
+                qrCodeImage: image,
+                promptPayPhoneNumber: promptPayPhoneNumber
+            )
+        }
+    }
+    func generateQrCodeImage(amount: Double, promptPayPhoneNumber: String) -> UIImage? {
         guard let qrCodeString = PromptPayQRStringGenerator.generateQRString(
             promptPayPhoneNumber: promptPayPhoneNumber,
             amount: amount
-        ) else { return nil }
+        ) else {
+            return nil
+        }
         let amountText = "฿\(String(format: "%.2f", amount))"
         return qrCodeImageGenerator.generateQRCodeImage(
             from: qrCodeString,

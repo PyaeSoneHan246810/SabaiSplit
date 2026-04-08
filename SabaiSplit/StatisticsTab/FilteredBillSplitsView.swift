@@ -9,20 +9,11 @@ import SwiftUI
 import SwiftData
 
 struct FilteredBillSplitsView: View {
-    @Query(sort: \BillSplit.date, order: .reverse) private var allBillSplits: [BillSplit]
     let filterOption: FilterOption
-    private var filteredBillSplits: [BillSplit] {
-        allBillSplits.filter {
-            switch filterOption {
-            case .completed:
-                $0.isAllPaid
-            case .inProgress:
-                !$0.isAllPaid
-            }
-        }
-    }
     private var navigationTitle: String {
         switch filterOption {
+        case .all:
+            "All Bill Splits"
         case .completed:
             "Completed Bill Splits"
         case .inProgress:
@@ -30,28 +21,8 @@ struct FilteredBillSplitsView: View {
         }
     }
     var body: some View {
-        Group {
-            if filteredBillSplits.isEmpty {
-                ContentUnavailableView {
-                    Label("No Bill Splits", systemImage: "person.3.fill")
-                } description: {
-                    Text("Create a bill split to get started.")
-                }
-            } else {
-                BillSplitsListView(
-                    billSplits: filteredBillSplits
-                )
-            }
-        }
+        BillSplitsListView(filterOption: filterOption)
         .navigationTitle(Text(navigationTitle))
-    }
-}
-
-enum FilterOption: String, Identifiable {
-    case completed
-    case inProgress
-    var id: String {
-        self.rawValue
     }
 }
 

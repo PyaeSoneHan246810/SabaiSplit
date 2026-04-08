@@ -150,7 +150,7 @@ private extension EditBillSplitView {
                         Image(systemName: "trash.circle.fill")
                             .imageScale(.large)
                     }
-                    .tint(.red)
+                    .tint(.pink)
                     .disabled(draftPersonList.count <= 2)
                 }
                 Divider()

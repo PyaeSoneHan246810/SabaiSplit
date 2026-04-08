@@ -5,7 +5,7 @@
 //  Created by Dylan on 5/4/26.
 //
 
-import SwiftUI
+import Foundation
 import Observation
 import CloudKit
 

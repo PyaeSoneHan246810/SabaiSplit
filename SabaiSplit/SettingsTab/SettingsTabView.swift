@@ -13,10 +13,6 @@ struct SettingsTabView: View {
     @AppStorage(AppStorageKeys.colorMode) private var selectedColorMode: ColorMode = .system
     @AppStorage(AppStorageKeys.promptPayPhoneNumber) private var promptPayPhoneNumber: String?
     @State private var isPromptPayNumberEditSheetPresented: Bool = false
-    @State private var newPromptPayPhoneNumber: String = ""
-    private var isPromptPayPhoneNumberValid: Bool {
-        PromptPayQRStringGenerator.formatPhoneNumber(newPromptPayPhoneNumber) != nil
-    }
     private var appName: String {
         Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Sabai Split"
     }
@@ -40,13 +36,13 @@ struct SettingsTabView: View {
         .listSectionSpacing(16.0)
         .navigationTitle(Text("Settings"))
         .sheet(isPresented: $isPromptPayNumberEditSheetPresented) {
-            editPromptPayNumberSheet
-                .wrapsWithNavigationStack()
-                .presentationDetents([.medium])
-                .interactiveDismissDisabled()
-                .onAppear {
-                    newPromptPayPhoneNumber = promptPayPhoneNumber ?? ""
-                }
+            EditPromptPayPhoneNumberView(
+                isViewPresented: $isPromptPayNumberEditSheetPresented,
+                promptPayPhoneNumber: $promptPayPhoneNumber
+            )
+            .wrapsWithNavigationStack()
+            .presentationDetents([.medium])
+            .interactiveDismissDisabled()
         }
     }
 }
@@ -138,7 +134,7 @@ private extension SettingsTabView {
                     title: "Not Signed In to iCloud",
                     image: "person.icloud",
                     desc: "Sign in to your Apple Account in Settings to enable sync and backup.",
-                    color: .red
+                    color: .pink
                 )
             case .temporarilyUnavailable:
                 iCloudStatusView(
@@ -182,44 +178,7 @@ private extension SettingsTabView {
             LabeledContent("Compatibility", value: appCompatibility)
         }
     }
-    var editPromptPayNumberSheet: some View {
-        ScrollView(.vertical) {
-            VStack(spacing: 16.0) {
-                VStack(alignment: .leading, spacing: 8.0) {
-                    Text("Edit PromptPay Phone Number")
-                        .font(.headline)
-                    TextField("Enter your number", text: $newPromptPayPhoneNumber)
-                        .keyboardType(.phonePad)
-                        .backgroundCardStyle(height: 60.0)
-                    if !newPromptPayPhoneNumber.isEmpty && !isPromptPayPhoneNumberValid {
-                        Text("Please enter a valid 10-digit Thai phone number starting with 0")
-                            .font(.caption)
-                            .foregroundStyle(.pink)
-                    }
-                }
-                Button {
-                    promptPayPhoneNumber = newPromptPayPhoneNumber
-                    isPromptPayNumberEditSheetPresented = false
-                } label: {
-                    Text("Save")
-                        .primaryButtonStyle()
-                }
-                .disabled(!isPromptPayPhoneNumberValid)
-            }
-        }
-        .contentMargins(16.0)
-        .scrollIndicators(.hidden)
-        .scrollDismissesKeyboard(.immediately)
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(role: .cancel) {
-                    isPromptPayNumberEditSheetPresented = false
-                }
-            }
-        }
-    }
 }
-
 
 #Preview {
     @Previewable @State var iCloudStatusProvider: ICloudStatusProvider = .init()

@@ -5,7 +5,7 @@
 //  Created by Dylan on 3/4/26.
 //
 
-import SwiftUI
+import Foundation
 
 enum TipOption: String, Identifiable, CaseIterable {
     case noTip
