@@ -18,6 +18,7 @@ struct EditBillSplitView: View {
     @State private var deletedPersistentIDs: [PersistentIdentifier] = []
     @State private var pendingAdjustment: PendingAdjustment? = nil
     @State private var amountSnapshot: [UUID: Double] = [:]
+    @State private var errorMessage: String? = nil
     @FocusState private var focusedAmountID: UUID?
     let billSplit: BillSplit
     private var disableConfirmButton: Bool {
@@ -46,6 +47,11 @@ struct EditBillSplitView: View {
         .onChange(of: focusedAmountID) { oldID, newID in
             onFocusedAmountIDChanged(oldID: oldID, newID: newID)
         }
+        .alert("Unable to Save", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
+            Button("OK") { errorMessage = nil }
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 }
 
@@ -64,7 +70,7 @@ private extension EditBillSplitView {
                     try modelContext.save()
                     dismiss()
                 } catch {
-                    print(error.localizedDescription)
+                    errorMessage = "Your changes could not be saved. Please try again."
                 }
             }
             .disabled(disableConfirmButton)
@@ -360,12 +366,13 @@ private extension EditBillSplitView {
     }
 
     func adjustmentMessage(for adjustment: PendingAdjustment) -> String {
-        let otherCount = draftPersonList.count - 1
         switch adjustment.kind {
-        case .amountEdited(_, _, _):
+        case .amountEdited(let draftID, _, _):
+            let otherCount = draftPersonList.filter { $0.id != draftID }.count
             return "Adjust the total bill, or distribute the difference among the other \(otherCount) \(otherCount == 1 ? "person" : "people")."
-        case .personDeleted(_):
-            return "Reduce the total bill, or distribute the share equally among the remaining \(otherCount) \(otherCount == 1 ? "person" : "people")."
+        case .personDeleted(let draft):
+            let remainingCount = draftPersonList.filter { $0.id != draft.id }.count
+            return "Reduce the total bill, or distribute the share equally among the remaining \(remainingCount) \(remainingCount == 1 ? "person" : "people")."
         }
     }
 }

@@ -12,6 +12,7 @@ struct BillSplitsListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \BillSplit.date, order: .reverse) private var allBillSplits: [BillSplit]
     @State private var isDeleteAllConfirmationPresented: Bool = false
+    @State private var errorMessage: String? = nil
     let filterOption: FilterOption
     var onCreateBillSplit: (() -> Void)?
     private var filteredBillSplits: [BillSplit] {
@@ -59,6 +60,11 @@ struct BillSplitsListView: View {
             } else {
                 filteredBillSplitsListView
             }
+        }
+        .alert("Unable to Delete", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
+            Button("OK") { errorMessage = nil }
+        } message: {
+            Text(errorMessage ?? "")
         }
     }
 }
@@ -109,7 +115,7 @@ private extension BillSplitsListView {
                             do {
                                 try deleteAllBillSplit()
                             } catch {
-                                print(error.localizedDescription)
+                                errorMessage = "Could not delete all bill splits. Please try again."
                             }
                         }
                     }, message: {
@@ -127,7 +133,8 @@ private extension BillSplitsListView {
         do {
             try modelContext.save()
         } catch {
-            print(error.localizedDescription)
+            modelContext.rollback()
+            errorMessage = "Could not delete this bill split. Please try again."
         }
     }
     func deleteAllBillSplit() throws {

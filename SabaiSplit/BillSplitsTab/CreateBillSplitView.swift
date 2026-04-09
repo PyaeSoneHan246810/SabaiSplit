@@ -21,6 +21,7 @@ struct CreateBillSplitView: View {
     @State private var amountPerPerson: Double = 0.0
     @State private var date: Date = Date()
     @State private var personList: [Person] = []
+    @State private var errorMessage: String? = nil
     private var trimmedTitle: String {
         title.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -92,6 +93,11 @@ struct CreateBillSplitView: View {
         .onChange(of: tipPercentage) {
             calculateAmountPerPerson()
         }
+        .alert("Unable to Save", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
+            Button("OK") { errorMessage = nil }
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 }
 
@@ -149,13 +155,19 @@ private extension CreateBillSplitView {
         }
     }
     func saveBillSplit() {
-        let billSplit = BillSplit(title: trimmedTitle, totalAmount: totalAmount, tipPercentage: tipPercentage, date: date, personList: personList)
+        let billSplit = BillSplit(
+            title: trimmedTitle,
+            totalAmount: totalAmount,
+            tipPercentage: tipPercentage,
+            date: date,
+            personList: personList
+        )
         modelContext.insert(billSplit)
         do {
             try modelContext.save()
             dismiss()
         } catch {
-            print(error.localizedDescription)
+            errorMessage = "Your bill split could not be saved. Please try again."
         }
     }
 }

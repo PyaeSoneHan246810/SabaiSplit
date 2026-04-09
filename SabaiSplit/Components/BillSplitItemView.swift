@@ -25,7 +25,7 @@ struct BillSplitItemView: View {
                 Text("\(billSplit.ratio) paid")
                 ProgressView(
                     value: Double(billSplit.numberOfPaidPerson),
-                    total: Double(billSplit.numberOfPerson)
+                    total: max(Double(billSplit.numberOfPerson), 1.0)
                 )
                 .progressViewStyle(.linear)
                 if billSplit.isAllPaid {

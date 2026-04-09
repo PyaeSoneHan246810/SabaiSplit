@@ -15,6 +15,7 @@ struct UnpaidPersonDetailsView: View {
     let unpaidPerson: Person
     @State private var qrCodeImage: UIImage? = nil
     @State private var isPromptPayNumberEditSheetPresented: Bool = false
+    @State private var errorMessage: String? = nil
     private let qrCodeImageGenerator = QrCodeImageGenerator()
     private let qrCodeImageSize: CGFloat = 300.0
     var body: some View {
@@ -57,7 +58,9 @@ struct UnpaidPersonDetailsView: View {
                         try modelContext.save()
                         dismiss()
                     } catch {
-                        print(error.localizedDescription)
+                        unpaidPerson.hasPaid = false
+                        unpaidPerson.paidDate = nil
+                        errorMessage = "Could not mark as paid. Please try again."
                     }
                 } label: {
                     Label("Mark as paid", systemImage: "checkmark")
@@ -91,6 +94,11 @@ struct UnpaidPersonDetailsView: View {
         .onAppear {
             qrCodeImage = generateQrCodeImage(amount: unpaidPerson.amount)
         }
+        .alert("Something Went Wrong", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
+            Button("OK") { errorMessage = nil }
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 }
 
@@ -115,7 +123,7 @@ private extension UnpaidPersonDetailsView {
 
 #Preview {
     UnpaidPersonDetailsView(
-        unpaidPerson: BillSplit.sample.nonNilPersonList.first!
+        unpaidPerson: BillSplit.sample.nonNilPersonList[0]
     )
     .tint(.mint)
 }

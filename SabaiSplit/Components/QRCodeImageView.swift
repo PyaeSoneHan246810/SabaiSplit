@@ -11,6 +11,7 @@ struct QRCodeImageView: View {
     var uiImage: UIImage?
     let size: CGFloat
     @State private var saveResult: SaveResult? = nil
+    @State private var imageSaver = ImageSaver()
 
     private enum SaveResult {
         case success
@@ -45,7 +46,6 @@ struct QRCodeImageView: View {
             }
             Button("Save QR Code") {
                 guard let uiImage else { return }
-                let imageSaver = ImageSaver()
                 imageSaver.writeToPhotoAlbum(uiImage: uiImage) { error in
                     if let error {
                         saveResult = .failure(error.localizedDescription)

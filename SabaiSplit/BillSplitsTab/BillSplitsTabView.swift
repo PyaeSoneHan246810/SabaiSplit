@@ -10,7 +10,6 @@ import SwiftData
 
 struct BillSplitsTabView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \BillSplit.date, order: .reverse) private var billSplits: [BillSplit]
     @State private var isCreateBillSplitSheetPresented: Bool = false
     var body: some View {
         BillSplitsListView(

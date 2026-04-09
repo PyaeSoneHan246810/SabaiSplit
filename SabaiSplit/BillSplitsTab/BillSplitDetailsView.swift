@@ -15,6 +15,7 @@ struct BillSplitDetailsView: View {
     @State private var personQrItem: PersonQrItem? = nil
     @State private var isEditBillSplitSheetPresented: Bool = false
     @State private var isPromptPayNumberEditSheetPresented: Bool = false
+    @State private var errorMessage: String? = nil
     let billSplit: BillSplit
     private let qrCodeImageGenerator = QrCodeImageGenerator()
     private let qrCodeImageSize: CGFloat = 300.0
@@ -59,6 +60,11 @@ struct BillSplitDetailsView: View {
             .presentationDetents([.medium])
             .interactiveDismissDisabled()
         }
+        .alert("Something Went Wrong", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
+            Button("OK") { errorMessage = nil }
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 }
 
@@ -100,7 +106,7 @@ private extension BillSplitDetailsView {
             VStack {
                 ProgressView(
                     value: Double(billSplit.numberOfPaidPerson),
-                    total: Double(billSplit.numberOfPerson)
+                    total: max(Double(billSplit.numberOfPerson), 1.0)
                 )
                 .progressViewStyle(.linear)
                 HStack {
@@ -148,7 +154,9 @@ private extension BillSplitDetailsView {
             do {
                 try modelContext.save()
             } catch {
-                print(error.localizedDescription)
+                person.hasPaid.toggle()
+                person.paidDate = person.hasPaid ? Date() : nil
+                errorMessage = "Could not update payment status. Please try again."
             }
         } label: {
             Image(systemName: person.hasPaid ? "checkmark.circle.fill" : "circle")

@@ -150,7 +150,7 @@ private extension StatisticsTabView {
             }
             ProgressView(
                 value: Double(paidPeopleCount),
-                total: Double(allPeopleCount)
+                total: max(Double(allPeopleCount), 1.0)
             )
             .progressViewStyle(.linear)
             HStack(spacing: 10.0) {
